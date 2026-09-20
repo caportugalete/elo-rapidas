@@ -1,20 +1,39 @@
-# Bases de datos y copias locales
+# =============================================================================
+# PORTUGALETEKO XAKE TALDEA - REGLAS DE GIT (SOLO WEB PÚBLICA)
+# =============================================================================
+
+# Scripts y lógica interna (permanecen 100% privados en el ordenador local)
+*.py
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Bases de datos SQLite y copias de seguridad
 *.db
 *.db.*
 *.backup*
 *.bak
+*.sqlite
+*.sqlite3
 *.OLD
 *.py.OLD
 *_0.0.1.py
 
-# Archivos exportados temporales
+# Archivos exportados temporales y listados
 lista_elo_blitz_*
 ficha_*
+*.csv
+*.txt
 
-# Python y caché
-__pycache__/
-*.pyc
+# Archivos de credenciales y claves
+.env
+*.env
+*.key
+*.pem
+*.token
 
-# Archivos del sistema
+# Archivos temporales del sistema operativo
 .DS_Store
 Thumbs.db
+desktop.ini
