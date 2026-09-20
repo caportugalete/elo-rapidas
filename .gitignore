@@ -1,0 +1,20 @@
+# Bases de datos y copias locales
+*.db
+*.db.*
+*.backup*
+*.bak
+*.OLD
+*.py.OLD
+*_0.0.1.py
+
+# Archivos exportados temporales
+lista_elo_blitz_*
+ficha_*
+
+# Python y caché
+__pycache__/
+*.pyc
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
