@@ -16,6 +16,7 @@ import shutil
 import sqlite3
 import csv
 import unicodedata
+import threading
 from datetime import datetime, timedelta, timezone
 from typing import Optional, List, Tuple, Dict, Any
 
@@ -307,8 +308,11 @@ class ELOClubGUI(ctk.CTk):
         btn_wa = ctk.CTkButton(toolbar, text="📱 WhatsApp", height=34, width=115, fg_color="#25d366", hover_color="#1e8449", text_color="#ffffff", command=self._copiar_ranking_whatsapp)
         btn_wa.grid(row=0, column=5, padx=4)
 
-        btn_web = ctk.CTkButton(toolbar, text="🌐 Web", height=34, width=95, fg_color="#1b3a57", hover_color="#2c5282", text_color="#ffffff", command=self._export_web_interactiva)
-        btn_web.grid(row=0, column=6, padx=(4, 0))
+        btn_web = ctk.CTkButton(toolbar, text="💾 Web Local", height=34, width=105, fg_color="#1b3a57", hover_color="#2c5282", text_color="#ffffff", command=self._export_web_interactiva)
+        btn_web.grid(row=0, column=6, padx=4)
+
+        btn_pub = ctk.CTkButton(toolbar, text="🚀 Publicar Web", height=34, width=130, fg_color="#1f538d", hover_color="#164373", text_color="#ffffff", font=ctk.CTkFont(size=12, weight="bold"), command=self._dialog_publicar_github_pages)
+        btn_pub.grid(row=0, column=7, padx=(4, 0))
 
         # 3. Tabla de Jugadores
         table_container = ctk.CTkFrame(view)
@@ -1485,6 +1489,17 @@ ESTADÍSTICAS GLOBALES:
         ctk.CTkButton(btn_row, text="📱 WhatsApp", width=105, height=36, fg_color="#25d366", hover_color="#1e8449", text_color="#ffffff", command=self._copiar_ranking_whatsapp).pack(side="left", padx=3)
         ctk.CTkButton(btn_row, text="🌍 Web (index.html)", width=135, height=36, fg_color="#1b3a57", hover_color="#2c5282", text_color="#ffffff", command=self._export_web_interactiva).pack(side="left", padx=3)
 
+        ctk.CTkButton(
+            p4, 
+            text="🚀 Publicar en GitHub Pages (Portal Web Online)", 
+            height=38, 
+            fg_color="#1f538d", 
+            hover_color="#164373", 
+            text_color="#ffffff",
+            font=ctk.CTkFont(size=13, weight="bold"), 
+            command=self._dialog_publicar_github_pages
+        ).pack(pady=(0, 16), padx=16, fill="x")
+
         return view
 
     def _on_show_mantenimiento(self):
@@ -1636,6 +1651,180 @@ ESTADÍSTICAS GLOBALES:
                 messagebox.showerror("Error", "No se pudo generar la página web interactiva.")
         except Exception as e:
             messagebox.showerror("Error", f"Error al generar la web: {e}")
+
+    def _dialog_publicar_github_pages(self):
+        if not self.backend.hay_jugadores():
+            messagebox.showwarning("Atención", "No hay jugadores registrados en la base de datos.")
+            return
+
+        if not messagebox.askyesno(
+            "Publicar en GitHub Pages",
+            "¿Deseas generar el portal web oficial con los últimos datos y publicarlo en GitHub Pages?\n\n"
+            "• URL Oficial: https://caportugalete.github.io/elo-rapidas/\n"
+            "• Incluye: Ranking oficial, fichas de socios, gráficos evolutivos y modo WhatsApp.\n\n"
+            "¿Confirmar publicación online?"
+        ):
+            return
+
+        # Ventana modal de progreso
+        dlg = ctk.CTkToplevel(self)
+        dlg.title("Publicando en GitHub Pages")
+        dlg.geometry("520x260")
+        dlg.resizable(False, False)
+        dlg.transient(self)
+        dlg.grab_set()
+
+        # Centrar diálogo respecto a la ventana principal
+        dlg.update_idletasks()
+        x = self.winfo_x() + (self.winfo_width() // 2) - 260
+        y = self.winfo_y() + (self.winfo_height() // 2) - 130
+        dlg.geometry(f"+{max(0, x)}+{max(0, y)}")
+
+        lbl_title = ctk.CTkLabel(
+            dlg, 
+            text="🚀  Publicando en GitHub Pages...", 
+            font=ctk.CTkFont(family="Segoe UI", size=16, weight="bold")
+        )
+        lbl_title.pack(pady=(22, 8))
+
+        lbl_status = ctk.CTkLabel(
+            dlg, 
+            text="Iniciando proceso...", 
+            font=ctk.CTkFont(size=12), 
+            text_color="#bdc3c7",
+            wraplength=460,
+            justify="center"
+        )
+        lbl_status.pack(pady=(0, 16), padx=20)
+
+        pbar = ctk.CTkProgressBar(dlg, width=420, mode="indeterminate")
+        pbar.pack(pady=(0, 16))
+        pbar.start()
+
+        lbl_info = ctk.CTkLabel(
+            dlg,
+            text="Sincronizando con el repositorio del club. Esto puede tardar unos segundos...",
+            font=ctk.CTkFont(size=11),
+            text_color="#7f8c8d"
+        )
+        lbl_info.pack(pady=(0, 10))
+
+        def callback_progreso(msg: str):
+            self.after(0, lambda: lbl_status.configure(text=msg))
+
+        def worker():
+            try:
+                exito, resultado = self.backend.publicar_github_pages(callback_progreso=callback_progreso)
+            except Exception as e:
+                exito, resultado = False, f"Excepción imprevista: {e}"
+
+            self.after(0, lambda: on_finalizar(exito, resultado))
+
+        def on_finalizar(exito: bool, resultado: str):
+            try:
+                pbar.stop()
+                dlg.destroy()
+            except Exception:
+                pass
+
+            if exito:
+                self._mostrar_dialogo_exito_publicacion(resultado)
+            else:
+                messagebox.showerror(
+                    "Error al Publicar en GitHub Pages",
+                    f"No se pudo completar la publicación:\n\n{resultado}"
+                )
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _mostrar_dialogo_exito_publicacion(self, url: str):
+        success_dlg = ctk.CTkToplevel(self)
+        success_dlg.title("¡Web Publicada con Éxito!")
+        success_dlg.geometry("540x290")
+        success_dlg.resizable(False, False)
+        success_dlg.transient(self)
+        success_dlg.grab_set()
+
+        success_dlg.update_idletasks()
+        x = self.winfo_x() + (self.winfo_width() // 2) - 270
+        y = self.winfo_y() + (self.winfo_height() // 2) - 145
+        success_dlg.geometry(f"+{max(0, x)}+{max(0, y)}")
+
+        ctk.CTkLabel(
+            success_dlg, 
+            text="🎉  ¡Portal Web Publicado con Éxito!", 
+            font=ctk.CTkFont(family="Segoe UI", size=17, weight="bold"),
+            text_color="#2ecc71"
+        ).pack(pady=(22, 8))
+
+        ctk.CTkLabel(
+            success_dlg,
+            text="Los cambios han sido enviados a GitHub. El portal web oficial del club\nse actualizará en GitHub Pages en los próximos instantes.",
+            font=ctk.CTkFont(size=12),
+            wraplength=480,
+            justify="center"
+        ).pack(pady=(0, 14), padx=20)
+
+        # Caja con la URL
+        url_frame = ctk.CTkFrame(success_dlg, corner_radius=8, fg_color="#1a252f")
+        url_frame.pack(fill="x", padx=30, pady=(0, 18))
+        
+        lbl_url = ctk.CTkLabel(
+            url_frame, 
+            text=url, 
+            font=ctk.CTkFont(family="Consolas", size=12, weight="bold"),
+            text_color="#3498db"
+        )
+        lbl_url.pack(pady=8, padx=12)
+
+        btn_box = ctk.CTkFrame(success_dlg, fg_color="transparent")
+        btn_box.pack(pady=(0, 15))
+
+        def abrir_url():
+            try:
+                webbrowser.open(url)
+            except Exception as e:
+                messagebox.showerror("Error", f"No se pudo abrir el navegador: {e}")
+
+        def copiar_url():
+            try:
+                self.clipboard_clear()
+                self.clipboard_append(url)
+                self.update()
+                btn_copy.configure(text="✓ ¡Enlace Copiado!", fg_color="#27ae60")
+            except Exception as e:
+                messagebox.showerror("Error", f"No se pudo copiar: {e}")
+
+        ctk.CTkButton(
+            btn_box, 
+            text="🌐 Abrir en Navegador", 
+            width=165, 
+            height=36, 
+            fg_color="#1f538d", 
+            hover_color="#164373", 
+            command=abrir_url
+        ).pack(side="left", padx=6)
+
+        btn_copy = ctk.CTkButton(
+            btn_box, 
+            text="📋 Copiar Enlace", 
+            width=140, 
+            height=36, 
+            fg_color="#2c3e50", 
+            hover_color="#34495e", 
+            command=copiar_url
+        )
+        btn_copy.pack(side="left", padx=6)
+
+        ctk.CTkButton(
+            btn_box, 
+            text="Cerrar", 
+            width=90, 
+            height=36, 
+            fg_color="#7f8c8d", 
+            hover_color="#95a5a6", 
+            command=success_dlg.destroy
+        ).pack(side="left", padx=6)
 
     def _ejecutar_export(self, func, target_path: str, tipo: str):
         old_files = set(os.listdir("."))

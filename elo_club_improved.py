@@ -1083,6 +1083,112 @@ class ELOClub:
                 except Exception as e:
                     print(f"{Colors.RED}No se pudo abrir automaticamente el navegador: {e}{Colors.RESET}")
 
+    def publicar_github_pages(self, callback_progreso=None) -> Tuple[bool, str]:
+        """
+        Genera index.html con los últimos datos y lo publica en GitHub Pages mediante Git.
+        callback_progreso(mensaje: str) es opcional para notificar avances a la GUI/consola.
+        Retorna (True, url_web) si tuvo éxito o (False, mensaje_error) si falló.
+        """
+        import subprocess
+
+        def log(msg: str):
+            if callback_progreso:
+                callback_progreso(msg)
+            else:
+                print(msg)
+
+        # 1. Verificar instalación de Git
+        log("Verificando instalación de Git...")
+        try:
+            subprocess.run(["git", "--version"], capture_output=True, text=True, check=True)
+        except Exception as e:
+            return False, f"Git no está disponible en el sistema o PATH: {e}"
+
+        # 2. Generar index.html actualizado
+        log("Generando portal web interactivo (index.html)...")
+        try:
+            from web_generator import generar_html_web_interactiva
+            html_path = generar_html_web_interactiva(self.db_name, "index.html")
+            if not html_path or not os.path.exists("index.html"):
+                return False, "No se pudo generar el archivo index.html."
+        except Exception as e:
+            return False, f"Error al generar index.html: {e}"
+
+        # 3. Comprobar configuración de Git y remoto origin
+        log("Comprobando repositorio Git y remoto 'origin'...")
+        try:
+            remotes = subprocess.run(["git", "remote", "-v"], capture_output=True, text=True, check=True).stdout
+            if "origin" not in remotes:
+                return False, "El repositorio local no tiene configurado el remoto 'origin'."
+        except subprocess.CalledProcessError as e:
+            return False, f"Error al consultar remotos Git: {e.stderr or e}"
+
+        # 4. Añadir archivos al índice de Git
+        log("Añadiendo archivos a Git (index.html, escudo, README)...")
+        try:
+            archivos = ["index.html", "README.md"]
+            if os.path.exists("EscudoPAPColor_low.jpg"):
+                archivos.append("EscudoPAPColor_low.jpg")
+            subprocess.run(["git", "add"] + archivos, capture_output=True, text=True, check=True)
+        except subprocess.CalledProcessError as e:
+            return False, f"Error al añadir archivos a Git: {e.stderr or e}"
+
+        # 5. Commit si hay cambios
+        log("Registrando cambios (commit)...")
+        try:
+            diff_res = subprocess.run(["git", "diff", "--cached", "--quiet"])
+            if diff_res.returncode != 0:
+                fecha_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                msg_commit = f"Actualización portal web ELO - {fecha_str}"
+                commit_res = subprocess.run(["git", "commit", "-m", msg_commit], capture_output=True, text=True)
+                if commit_res.returncode != 0:
+                    return False, f"Error al crear commit: {commit_res.stderr or commit_res.stdout}"
+            else:
+                log("No se detectaron cambios frente al último commit.")
+        except Exception as e:
+            return False, f"Error al verificar estado de commit: {e}"
+
+        # 6. Push a GitHub
+        log("Publicando en GitHub Pages (git push origin main)...")
+        try:
+            push_res = subprocess.run(["git", "push", "-u", "origin", "main"], capture_output=True, text=True)
+            if push_res.returncode != 0:
+                # Si falló la rama main, intentar rama actual
+                branch_res = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True)
+                curr_branch = branch_res.stdout.strip() or "main"
+                if curr_branch != "main":
+                    push_res = subprocess.run(["git", "push", "-u", "origin", curr_branch], capture_output=True, text=True)
+
+                if push_res.returncode != 0:
+                    err = (push_res.stderr or push_res.stdout).strip()
+                    return False, (
+                        f"Error al subir cambios a GitHub:\n{err}\n\n"
+                        "Comprueba que tu cuenta de GitHub tenga permisos en el repositorio "
+                        "o que Git tenga configuradas tus credenciales de acceso."
+                    )
+        except Exception as e:
+            return False, f"Excepción durante 'git push': {e}"
+
+        url_oficial = "https://caportugalete.github.io/elo-rapidas/"
+        log(f"¡Publicación completada en: {url_oficial}!")
+        return True, url_oficial
+
+    def _opcion_publicar_github(self):
+        """Opción del menú para publicar en GitHub Pages desde consola."""
+        print(f"\n{Colors.CYAN}=== PUBLICAR EN GITHUB PAGES ==={Colors.RESET}")
+        confirm = input(f"{Colors.YELLOW}¿Deseas regenerar la web y subir los cambios a GitHub Pages? (S/n): {Colors.RESET}").strip().lower()
+        if confirm in ('', 's', 'si', 'y'):
+            exito, res = self.publicar_github_pages()
+            if exito:
+                print(f"\n{Colors.GREEN}✓ ¡Portal web publicado con éxito!{Colors.RESET}")
+                print(f"{Colors.CYAN}URL: {res}{Colors.RESET}")
+                abrir = input(f"\n{Colors.YELLOW}¿Deseas abrir la web en tu navegador predeterminado ahora? (S/n): {Colors.RESET}").strip().lower()
+                if abrir in ('', 's', 'si', 'y'):
+                    import webbrowser
+                    webbrowser.open(res)
+            else:
+                print(f"\n{Colors.RED}No se pudo publicar: {res}{Colors.RESET}")
+
     def generar_nueva_lista(self):
         if not self.hay_jugadores(): return
         confirmacion = input(f"\n{Colors.YELLOW}¿Confirmar la generación de una nueva lista? (Esto guardará el ranking actual y reseteará las variaciones): (s/N): {Colors.RESET}")
@@ -1439,7 +1545,8 @@ class ELOClub:
             print("14. Ficha y estadísticas del jugador")
             print(f"\n{Colors.YELLOW}--- Exportar ---{Colors.RESET}")
             print("11. Exportar a TXT | 12. Exportar a CSV | 13. Exportar a HTML")
-            print(f"{Colors.GREEN}16. Generar Web Interactiva (index.html) | Fichas y Ranking online{Colors.RESET}")
+            print(f"{Colors.GREEN}16. Generar Web Interactiva (index.html) | Fichas y Ranking local{Colors.RESET}")
+            print(f"{Colors.CYAN}17. Publicar en GitHub Pages (Online) | Subir web oficial a caportugalete.github.io{Colors.RESET}")
             print(f"\n{Colors.YELLOW}--- Modo Visual ---{Colors.RESET}")
             print(f"{Colors.CYAN}15. Abrir Aplicación de Escritorio (Ventana){Colors.RESET}")
             print(f"{Colors.RED}0. Salir{Colors.RESET}")
@@ -1456,6 +1563,7 @@ class ELOClub:
                 "14": self.ver_ficha_jugador, "f": self.ver_ficha_jugador, "ficha": self.ver_ficha_jugador,
                 "15": self.abrir_interfaz_grafica, "gui": self.abrir_interfaz_grafica, "ventana": self.abrir_interfaz_grafica,
                 "16": self._opcion_exportar_web, "web": self._opcion_exportar_web,
+                "17": self._opcion_publicar_github, "publicar": self._opcion_publicar_github, "github": self._opcion_publicar_github,
             }
             
             if opcion == "0":
