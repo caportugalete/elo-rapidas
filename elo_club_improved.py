@@ -1124,9 +1124,9 @@ class ELOClub:
             return False, f"Error al consultar remotos Git: {e.stderr or e}"
 
         # 4. Añadir archivos al índice de Git
-        log("Añadiendo archivos a Git (index.html, escudo, README)...")
+        log("Añadiendo archivos a Git (index.html, escudo, README, .nojekyll)...")
         try:
-            archivos = ["index.html", "README.md"]
+            archivos = ["index.html", "README.md", ".nojekyll"]
             if os.path.exists("EscudoPAPColor_low.jpg"):
                 archivos.append("EscudoPAPColor_low.jpg")
             subprocess.run(["git", "add"] + archivos, capture_output=True, text=True, check=True)
