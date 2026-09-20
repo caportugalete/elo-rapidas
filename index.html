@@ -2,7 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#1b3a57">
+    <meta name="description" content="Portugaleteko Xake Taldea - Portal oficial de clasificación ELO y fichas de socios en tiempo real">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Portugaleteko Xake Taldea - Portal ELO y Fichas de Socios</title>
     <style>
         :root {
@@ -19,8 +23,8 @@
             --badge-green: #38a169;
             --badge-red: #e53e3e;
             --badge-gray: #a0aec0;
-            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.12), 0 4px 6px -2px rgba(0,0,0,0.06);
         }
 
         * {
@@ -28,20 +32,39 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: var(--bg);
             color: var(--text-main);
             line-height: 1.5;
-            padding-bottom: 50px;
+            padding-bottom: 60px;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Header */
+        /* Accesibilidad - Focus outline visible */
+        :focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* Clases de Visibilidad Responsive */
+        .mobile-only {
+            display: none !important;
+        }
+        .desktop-only {
+            display: table-cell;
+        }
+        th.desktop-only {
+            display: table-cell;
+        }
+
+        /* Header Oficial */
         header {
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
             color: white;
-            padding: 24px 16px;
+            padding: 22px 16px;
             box-shadow: var(--shadow);
             border-bottom: 4px solid var(--accent);
         }
@@ -51,20 +74,20 @@
             margin: 0 auto;
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 18px;
             flex-wrap: wrap;
         }
 
         .escudo-wrap {
-            width: 80px;
-            height: 80px;
+            width: 74px;
+            height: 74px;
             background: white;
             border-radius: 12px;
             padding: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.25);
             flex-shrink: 0;
         }
 
@@ -75,19 +98,24 @@
         }
 
         .escudo-fallback {
-            font-size: 40px;
+            font-size: 38px;
+        }
+
+        .header-text {
+            flex: 1 1 300px;
         }
 
         .header-text h1 {
-            font-size: 1.6rem;
+            font-size: clamp(1.25rem, 3.5vw, 1.65rem);
             font-weight: 700;
             letter-spacing: -0.5px;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
+            line-height: 1.25;
         }
 
         .header-text p {
-            font-size: 0.95rem;
-            opacity: 0.85;
+            font-size: clamp(0.8rem, 2vw, 0.95rem);
+            opacity: 0.9;
         }
 
         .header-actions {
@@ -101,16 +129,18 @@
             background-color: var(--accent);
             color: #1a202c;
             border: none;
-            padding: 9px 15px;
+            padding: 10px 18px;
             border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.88rem;
+            font-weight: 700;
+            font-size: 0.9rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             transition: all 0.2s;
             text-decoration: none;
+            min-height: 44px;
+            touch-action: manipulation;
         }
 
         .btn-action:hover {
@@ -118,71 +148,84 @@
             transform: translateY(-1px);
         }
 
-        /* Container & Metrics Cards */
+        .btn-action:active {
+            transform: translateY(0);
+        }
+
+        /* Contenedor Principal */
         .container {
             max-width: 1200px;
             margin: 20px auto;
             padding: 0 16px;
         }
 
+        /* Métricas Rápidas */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 16px;
-            margin-bottom: 24px;
+            margin-bottom: 22px;
         }
 
         .stat-card {
             background: var(--surface);
-            padding: 16px 20px;
+            padding: 16px 18px;
             border-radius: 12px;
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
         }
 
         .stat-icon {
-            width: 48px;
-            height: 48px;
+            width: 46px;
+            height: 46px;
             border-radius: 10px;
             background: #ebf4ff;
             color: var(--primary-light);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 22px;
             flex-shrink: 0;
         }
 
         .stat-content .stat-val {
-            font-size: 1.5rem;
+            font-size: 1.45rem;
             font-weight: 700;
             color: var(--primary-dark);
             line-height: 1.2;
         }
 
         .stat-content .stat-lbl {
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
             text-transform: uppercase;
             font-weight: 600;
             letter-spacing: 0.5px;
         }
 
-        /* Nav Tabs */
+        /* Pestañas de Navegación */
         .tabs {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             border-bottom: 2px solid var(--border);
             margin-bottom: 20px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+
+        .tabs::-webkit-scrollbar {
+            display: none;
         }
 
         .tab-btn {
             background: none;
             border: none;
-            padding: 10px 18px;
+            padding: 12px 18px;
             font-size: 0.95rem;
             font-weight: 600;
             color: var(--text-muted);
@@ -190,6 +233,9 @@
             border-bottom: 3px solid transparent;
             margin-bottom: -2px;
             transition: all 0.2s;
+            flex-shrink: 0;
+            min-height: 44px;
+            touch-action: manipulation;
         }
 
         .tab-btn:hover {
@@ -201,34 +247,36 @@
             border-bottom-color: var(--accent);
         }
 
-        /* Toolbar Controls */
+        /* Toolbar y Filtros */
         .toolbar {
             background: var(--surface);
-            padding: 16px;
+            padding: 14px 16px;
             border-radius: 12px;
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             display: flex;
             flex-wrap: wrap;
-            gap: 14px;
+            gap: 12px;
             align-items: center;
             justify-content: space-between;
         }
 
         .search-box {
-            flex: 1 1 280px;
+            flex: 1 1 260px;
             position: relative;
         }
 
         .search-box input {
             width: 100%;
-            padding: 10px 14px 10px 38px;
+            padding: 12px 14px 12px 38px;
             border: 1px solid var(--border);
             border-radius: 8px;
-            font-size: 0.92rem;
+            font-size: 16px; /* Importante para móvil: previene zoom no deseado en iOS Safari */
             outline: none;
             transition: border-color 0.2s;
+            -webkit-appearance: none;
+            min-height: 44px;
         }
 
         .search-box input:focus {
@@ -243,24 +291,36 @@
             transform: translateY(-50%);
             color: var(--text-muted);
             font-size: 16px;
+            pointer-events: none;
         }
 
         .filter-buttons {
             display: flex;
             gap: 6px;
-            flex-wrap: wrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            white-space: nowrap;
+            scrollbar-width: none;
+            padding-bottom: 2px;
+        }
+
+        .filter-buttons::-webkit-scrollbar {
+            display: none;
         }
 
         .btn-filter {
             background: #f1f5f9;
             color: var(--text-main);
             border: 1px solid var(--border);
-            padding: 7px 14px;
+            padding: 9px 14px;
             border-radius: 6px;
             font-size: 0.85rem;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            flex-shrink: 0;
+            min-height: 40px;
+            touch-action: manipulation;
         }
 
         .btn-filter:hover {
@@ -273,7 +333,7 @@
             border-color: var(--primary);
         }
 
-        /* Table Card */
+        /* Tarjeta de Tabla */
         .table-card {
             background: var(--surface);
             border-radius: 12px;
@@ -301,7 +361,7 @@
             font-size: 0.82rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            padding: 14px 16px;
+            padding: 13px 14px;
             border-bottom: 2px solid var(--border);
             white-space: nowrap;
             user-select: none;
@@ -323,7 +383,7 @@
         }
 
         td {
-            padding: 12px 16px;
+            padding: 12px 14px;
             border-bottom: 1px solid var(--border);
             vertical-align: middle;
         }
@@ -335,6 +395,10 @@
 
         tr.player-row:hover {
             background-color: #f1f7fe;
+        }
+
+        tr.player-row:active {
+            background-color: #e2eefb;
         }
 
         .pos-badge {
@@ -357,6 +421,7 @@
         .player-name {
             font-weight: 600;
             color: var(--primary);
+            line-height: 1.3;
         }
 
         .player-title {
@@ -365,9 +430,19 @@
             color: #9a3412;
             font-size: 0.72rem;
             font-weight: 700;
-            padding: 1px 6px;
+            padding: 2px 6px;
             border-radius: 4px;
-            margin-right: 6px;
+            margin-right: 5px;
+        }
+
+        .player-meta-mobile {
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            font-size: 0.76rem;
+            color: var(--text-muted);
         }
 
         .elo-cell {
@@ -378,9 +453,9 @@
 
         .var-badge {
             display: inline-block;
-            font-weight: 600;
-            font-size: 0.82rem;
-            padding: 2px 7px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 2px 8px;
             border-radius: 12px;
             white-space: nowrap;
         }
@@ -392,10 +467,10 @@
         .status-badge {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            font-size: 0.78rem;
+            gap: 4px;
+            font-size: 0.75rem;
             font-weight: 600;
-            padding: 3px 8px;
+            padding: 2px 7px;
             border-radius: 9999px;
             white-space: nowrap;
         }
@@ -404,8 +479,8 @@
         .status-inact { background: #fde8e8; color: #9b1c1c; }
 
         .dot {
-            width: 7px;
-            height: 7px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
         }
         .dot-green { background: #31c48d; }
@@ -415,13 +490,14 @@
             background: #ebf4ff;
             color: var(--primary-light);
             border: 1px solid #c3ddfd;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             white-space: nowrap;
+            min-height: 34px;
         }
 
         .btn-view-ficha:hover {
@@ -430,15 +506,41 @@
             border-color: var(--primary);
         }
 
-        /* Modal / Ficha Viewer */
+        /* Avisos y Ayudas de Navegación */
+        .mobile-tap-hint {
+            background: #ebf4ff;
+            color: #1b3a57;
+            padding: 9px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            margin-bottom: 12px;
+            font-weight: 500;
+            border: 1px solid #c3ddfd;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mobile-scroll-hint {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.76rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* Modal / Ficha Viewer Adaptable */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(13, 35, 58, 0.6);
-            backdrop-filter: blur(3px);
+            background: rgba(13, 35, 58, 0.65);
+            backdrop-filter: blur(4px);
             z-index: 1000;
             display: none;
             align-items: center;
@@ -474,44 +576,48 @@
         .modal-header {
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
             color: white;
-            padding: 20px 24px;
+            padding: 18px 22px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 3px solid var(--accent);
+            flex-shrink: 0;
         }
 
         .modal-header h2 {
-            font-size: 1.35rem;
+            font-size: 1.3rem;
             margin-bottom: 2px;
+            line-height: 1.25;
         }
 
         .modal-header p {
-            font-size: 0.85rem;
-            opacity: 0.85;
+            font-size: 0.82rem;
+            opacity: 0.9;
         }
 
         .modal-close {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.18);
             border: none;
             color: white;
-            width: 34px;
-            height: 34px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: background 0.2s;
+            flex-shrink: 0;
+            touch-action: manipulation;
         }
 
         .modal-close:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.35);
         }
 
         .modal-body {
-            padding: 24px;
+            padding: 22px;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
@@ -520,7 +626,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 22px;
         }
 
         .ficha-stat-box {
@@ -531,7 +637,7 @@
         }
 
         .ficha-stat-label {
-            font-size: 0.75rem;
+            font-size: 0.74rem;
             color: var(--text-muted);
             text-transform: uppercase;
             font-weight: 600;
@@ -559,14 +665,15 @@
             gap: 8px;
         }
 
-        /* SVG Evolution Chart */
+        /* Gráfico SVG Evolutivo */
         .chart-box {
             background: #f8fafc;
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 24px;
+            padding: 14px;
+            margin-bottom: 22px;
             position: relative;
+            user-select: none;
         }
 
         .chart-svg {
@@ -579,23 +686,48 @@
             position: absolute;
             background: rgba(13, 35, 58, 0.95);
             color: white;
-            padding: 6px 10px;
+            padding: 6px 12px;
             border-radius: 6px;
             font-size: 0.78rem;
             pointer-events: none;
             display: none;
-            transform: translate(-50%, -120%);
+            transform: translate(-50%, -125%);
             white-space: nowrap;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
             z-index: 10;
         }
 
-        /* Trajectory Table */
-        .modal-body table th {
-            background-color: #f1f5f9;
+        /* Toast de Notificaciones Flotante */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #0d233a;
+            color: white;
+            padding: 12px 22px;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 0.88rem;
+            font-weight: 600;
+            z-index: 2000;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+            opacity: 0;
+            pointer-events: none;
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 90%;
+            text-align: center;
         }
 
-        /* Footer */
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Pie de Página */
         footer {
             text-align: center;
             color: var(--text-muted);
@@ -604,26 +736,172 @@
             padding: 0 16px;
         }
 
-        /* Responsive */
+        /* RESPONSIVE & MOBILE DESIGN (Móviles y Tablets) */
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
                 text-align: center;
+                gap: 14px;
+            }
+            .escudo-wrap {
+                margin: 0 auto;
             }
             .header-actions {
                 margin-left: 0;
                 width: 100%;
                 justify-content: center;
             }
-            .escudo-wrap {
-                margin: 0 auto;
+            .btn-action {
+                width: 100%;
+                justify-content: center;
             }
+        }
+
+        @media (max-width: 680px) {
+            .mobile-only {
+                display: block !important;
+            }
+            span.mobile-only, .player-meta-mobile.mobile-only {
+                display: flex !important;
+            }
+            .desktop-only {
+                display: none !important;
+            }
+            th.desktop-only, td.desktop-only {
+                display: none !important;
+            }
+
+            .container {
+                padding: 0 12px;
+                margin: 14px auto;
+            }
+
+            /* Métricas Rápidas en Cuadrícula 2x2 para Ahorro Vertical */
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                margin-bottom: 16px;
+            }
+            .stat-card {
+                padding: 10px 12px;
+                gap: 10px;
+                border-radius: 10px;
+            }
+            .stat-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+                border-radius: 8px;
+            }
+            .stat-content .stat-val {
+                font-size: 1.25rem;
+            }
+            .stat-content .stat-lbl {
+                font-size: 0.72rem;
+            }
+
+            /* Barra de Búsqueda y Filtros Compacta */
             .toolbar {
-                flex-direction: column;
-                align-items: stretch;
+                padding: 12px;
+                gap: 10px;
+                margin-bottom: 14px;
+            }
+            .search-box {
+                width: 100%;
+                flex: 1 1 100%;
             }
             .filter-buttons {
-                justify-content: center;
+                width: 100%;
+                justify-content: flex-start;
+            }
+            .btn-filter {
+                padding: 8px 12px;
+                font-size: 0.82rem;
+            }
+
+            .tabs {
+                margin-bottom: 14px;
+            }
+            .tab-btn {
+                padding: 10px 14px;
+                font-size: 0.88rem;
+            }
+
+            /* Tabla de Ranking Móvil */
+            table th {
+                padding: 10px 8px;
+                font-size: 0.76rem;
+            }
+            table td {
+                padding: 10px 8px;
+                font-size: 0.86rem;
+            }
+            .elo-cell {
+                font-size: 1rem;
+            }
+            .pos-badge {
+                width: 24px;
+                height: 24px;
+                line-height: 24px;
+                font-size: 0.78rem;
+            }
+
+            /* Modal en Pantalla Completa Móvil */
+            .modal-overlay {
+                padding: 0;
+            }
+            .modal-card {
+                max-width: 100%;
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+            .modal-header {
+                padding: 14px 16px;
+                position: sticky;
+                top: 0;
+                z-index: 30;
+            }
+            .modal-header h2 {
+                font-size: 1.15rem;
+            }
+            .modal-header p {
+                font-size: 0.75rem;
+            }
+            .modal-body {
+                padding: 16px 14px;
+                flex: 1;
+            }
+            .ficha-badges {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                margin-bottom: 16px;
+            }
+            .ficha-stat-box {
+                padding: 10px 12px;
+            }
+            .ficha-stat-value {
+                font-size: 1.1rem;
+            }
+            .chart-box {
+                padding: 10px 8px;
+                margin-bottom: 16px;
+            }
+            .chart-svg {
+                height: 180px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .escudo-wrap {
+                width: 58px;
+                height: 58px;
+            }
+            .escudo-fallback {
+                font-size: 30px;
+            }
+            .header-text h1 {
+                font-size: 1.18rem;
             }
         }
     </style>
@@ -641,8 +919,8 @@
                 <p>Portal Oficial de Clasificación y Fichas de Socios • Rápidas FIDE (K=10)</p>
             </div>
             <div class="header-actions">
-                <button class="btn-action" onclick="copiarWhatsApp()" title="Copiar resumen optimizado para WhatsApp y lectores de pantalla">
-                    <span>📱</span> Copiar WhatsApp
+                <button class="btn-action" onclick="copiarWhatsApp()" title="Compartir o copiar resumen oficial para WhatsApp y redes" aria-label="Compartir resumen para WhatsApp">
+                    <span>📱</span> Compartir WhatsApp
                 </button>
             </div>
         </div>
@@ -650,59 +928,63 @@
 
     <div class="container">
 
-        <!-- Métricas Rápidas -->
+        <!-- Métricas Rápidas (2x2 en móvil) -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon">👥</div>
+                <div class="stat-icon" aria-hidden="true">👥</div>
                 <div class="stat-content">
                     <div class="stat-val" id="stat-socios">35</div>
                     <div class="stat-lbl">Socios Registrados</div>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">⚡</div>
+                <div class="stat-icon" aria-hidden="true">⚡</div>
                 <div class="stat-content">
                     <div class="stat-val" id="stat-media">2082.1</div>
                     <div class="stat-lbl">ELO Medio Activo</div>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">👑</div>
+                <div class="stat-icon" aria-hidden="true">👑</div>
                 <div class="stat-content">
                     <div class="stat-val" id="stat-max">2335</div>
                     <div class="stat-lbl">ELO Más Alto</div>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">🏆</div>
+                <div class="stat-icon" aria-hidden="true">🏆</div>
                 <div class="stat-content">
-                    <div class="stat-val" id="stat-torneos">2 <span style="font-size:0.9rem; font-weight:normal; color:#718096">(22 hist.)</span></div>
+                    <div class="stat-val" id="stat-torneos">2 <span style="font-size:0.85rem; font-weight:normal; color:#718096">(22 hist.)</span></div>
                     <div class="stat-lbl">Torneos en Ciclo</div>
                 </div>
             </div>
         </div>
 
-        <!-- Pestañas de Navegación -->
-        <div class="tabs">
+        <!-- Pestañas de Navegación Deslizables -->
+        <nav class="tabs" aria-label="Secciones del portal">
             <button class="tab-btn active" onclick="cambiarTab('ranking')">♟️ Ranking Oficial</button>
             <button class="tab-btn" onclick="cambiarTab('torneos')">🏆 Torneos del Ciclo (2)</button>
             <button class="tab-btn" onclick="cambiarTab('historial')">📜 Historial de Listas</button>
-        </div>
+        </nav>
 
         <!-- VISTA 1: RANKING -->
-        <div id="view-ranking">
+        <main id="view-ranking">
             <!-- Barra de Filtros y Búsqueda -->
             <div class="toolbar">
                 <div class="search-box">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" id="buscador" placeholder="Buscar por socio, apellido o título..." oninput="filtrarTabla()">
+                    <span class="search-icon" aria-hidden="true">🔍</span>
+                    <input type="text" id="buscador" placeholder="Buscar por socio, apellido o título..." oninput="filtrarTabla()" aria-label="Buscar socio por nombre o título">
                 </div>
-                <div class="filter-buttons">
+                <div class="filter-buttons" role="group" aria-label="Filtrar ranking">
                     <button class="btn-filter active" data-filter="todos" onclick="setFiltro('todos')">Todos (35)</button>
                     <button class="btn-filter" data-filter="activos" onclick="setFiltro('activos')">Activos (&le;365d)</button>
                     <button class="btn-filter" data-filter="inactivos" onclick="setFiltro('inactivos')">Inactivos (&gt;365d)</button>
                     <button class="btn-filter" data-filter="podio" onclick="setFiltro('podio')">🏆 Top 3 Podio</button>
                 </div>
+            </div>
+
+            <div class="mobile-tap-hint mobile-only" aria-hidden="true">
+                <span>💡</span> <span>Toca cualquier socio para abrir su ficha completa y gráfica</span>
             </div>
 
             <!-- Tabla de Ranking -->
@@ -711,14 +993,14 @@
                     <table id="tabla-ranking">
                         <thead>
                             <tr>
-                                <th style="width: 60px; text-align: center;" onclick="ordenarPor('pos')">#</th>
+                                <th style="width: 50px; text-align: center;" onclick="ordenarPor('pos')">#</th>
                                 <th onclick="ordenarPor('nombre')">Socio / Jugador</th>
-                                <th style="text-align: center;" onclick="ordenarPor('elo')">ELO Actual</th>
-                                <th style="text-align: center;" onclick="ordenarPor('var')">Var. Ciclo</th>
-                                <th style="text-align: center;" onclick="ordenarPor('torneos')">Torneos</th>
-                                <th onclick="ordenarPor('ultimo')">Último Torneo</th>
-                                <th style="text-align: center;">Estado</th>
-                                <th style="text-align: center;">Acción</th>
+                                <th style="text-align: center;" onclick="ordenarPor('elo')">ELO</th>
+                                <th style="text-align: center;" onclick="ordenarPor('var')">Var.</th>
+                                <th class="desktop-only" style="text-align: center;" onclick="ordenarPor('torneos')">Torneos</th>
+                                <th class="desktop-only" onclick="ordenarPor('ultimo')">Último Torneo</th>
+                                <th class="desktop-only" style="text-align: center;">Estado</th>
+                                <th class="desktop-only" style="text-align: center;">Acción</th>
                             </tr>
                         </thead>
                         <tbody id="ranking-body">
@@ -727,19 +1009,20 @@
                     </table>
                 </div>
             </div>
-        </div>
+        </main>
 
         <!-- VISTA 2: TORNEOS DEL CICLO -->
-        <div id="view-torneos" style="display: none;">
+        <section id="view-torneos" style="display: none;">
+            <div class="mobile-scroll-hint mobile-only">↔ Desliza la tabla si necesitas ver más columnas</div>
             <div class="table-card">
                 <div class="table-responsive">
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 60px; text-align: center;">#</th>
+                                <th style="width: 50px; text-align: center;">#</th>
                                 <th>Fecha</th>
                                 <th>Nombre del Torneo</th>
-                                <th style="text-align: center;">Participantes Computados</th>
+                                <th style="text-align: center;">Participantes</th>
                             </tr>
                         </thead>
                         <tbody id="torneos-body">
@@ -748,18 +1031,19 @@
                     </table>
                 </div>
             </div>
-        </div>
+        </section>
 
         <!-- VISTA 3: HISTORIAL DE LISTAS -->
-        <div id="view-historial" style="display: none;">
+        <section id="view-historial" style="display: none;">
+            <div class="mobile-scroll-hint mobile-only">↔ Desliza la tabla horizontalmente para ver los podios</div>
             <div class="table-card">
                 <div class="table-responsive">
                     <table>
                         <thead>
                             <tr>
                                 <th style="width: 70px; text-align: center;">Lista ID</th>
-                                <th>Fecha de Generación Oficial</th>
-                                <th style="text-align: center;">Total Socios</th>
+                                <th>Fecha Oficial</th>
+                                <th style="text-align: center;">Total</th>
                                 <th>Podio / Top 3</th>
                             </tr>
                         </thead>
@@ -769,23 +1053,23 @@
                     </table>
                 </div>
             </div>
-        </div>
+        </section>
 
     </div>
 
     <!-- MODAL DE FICHA INDIVIDUAL DE SOCIO -->
-    <div class="modal-overlay" id="modal-ficha" onclick="cerrarFicha(event)">
+    <div class="modal-overlay" id="modal-ficha" onclick="cerrarFicha(event)" role="dialog" aria-modal="true" aria-labelledby="modal-nombre">
         <div class="modal-card" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <div>
                     <h2 id="modal-nombre">Nombre del Jugador</h2>
                     <p id="modal-sub">ID: 0 • Título: - • Registrado en el club</p>
                 </div>
-                <button class="modal-close" onclick="cerrarFichaDirecto()">✕</button>
+                <button class="modal-close" onclick="cerrarFichaDirecto()" aria-label="Cerrar ficha">✕</button>
             </div>
             <div class="modal-body">
 
-                <!-- Métricas Principales del Jugador -->
+                <!-- Métricas Principales del Jugador (2x2 en móvil) -->
                 <div class="ficha-badges">
                     <div class="ficha-stat-box">
                         <div class="ficha-stat-label">ELO Actual</div>
@@ -809,7 +1093,7 @@
                     </div>
                 </div>
 
-                <!-- Gráfico de Evolución de ELO -->
+                <!-- Gráfico de Evolución de ELO con Soporte Táctil -->
                 <div class="section-title">
                     <span>📈</span> Evolución de ELO en el Club
                 </div>
@@ -824,6 +1108,7 @@
                 <div class="section-title">
                     <span>♟️</span> Trayectoria Torneo a Torneo
                 </div>
+                <div class="mobile-scroll-hint mobile-only">↔ Desliza la tabla para ver Rivales Medios y Performance</div>
                 <div class="table-card">
                     <div class="table-responsive">
                         <table>
@@ -851,13 +1136,16 @@
         </div>
     </div>
 
+    <!-- Toast Flotante para Feedback Rápido -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
     <footer>
-        Portugaleteko Xake Taldea • Portal interactivo de clasificación de ajedrez rápido • Generado el 20/09/2026 a las 11:37
+        Portugaleteko Xake Taldea • Portal interactivo de clasificación de ajedrez rápido • Generado el 20/09/2026 a las 11:49
     </footer>
 
     <!-- DATOS EMBEBIDOS JSON -->
     <script id="club-data" type="application/json">
-{"fecha_emision": "20/09/2026", "hora_emision": "11:37", "stats": {"total_socios": 35, "media_elo": 2082.1, "elo_max": 2335, "torneos_ciclo": 2, "total_torneos_hist": 22}, "jugadores": [{"pos": 1, "id": 1, "nombre": "Rikardo", "apellidos": "Pérez Pacheco", "nombre_completo": "Rikardo Pérez Pacheco", "elo": 2335, "titulo": "PFM", "variacion": 0, "num_torneos": 40, "fecha_ultimo": "2026-07-04", "dias_inactivo": 78, "peak_elo": 2339, "peak_fecha": "2026-06-06", "peak_torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "best_perf": 2872, "best_perf_torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "total_partidas": 99, "total_puntos": 80.5, "efectividad": 81.3, "rivales_ponderado": 2073.0, "balance_elo": 8.8, "trayectoria": [{"num": 1, "fecha": "2025-09-06", "torneo": "Torneo de la Amistad Laudio", "elo_inicial": 2326, "rivales_medio": 2070.0, "partidas": 16, "puntos": 14.0, "perf": 2420, "variacion": 9.8, "nuevo_elo": 2336}, {"num": 2, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2336, "rivales_medio": 2071.0, "partidas": 15, "puntos": 10.0, "perf": 2204, "variacion": -23.2, "nuevo_elo": 2313}, {"num": 3, "fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo_inicial": 2313, "rivales_medio": 2071.0, "partidas": 15, "puntos": 12.0, "perf": 2311, "variacion": -0.2, "nuevo_elo": 2313}, {"num": 4, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2313, "rivales_medio": 2074.0, "partidas": 13, "puntos": 9.5, "perf": 2276, "variacion": -8.8, "nuevo_elo": 2304}, {"num": 5, "fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo_inicial": 2304, "rivales_medio": 2072.0, "partidas": 17, "puntos": 17.0, "perf": 2872, "variacion": 35.4, "nuevo_elo": 2339}, {"num": 6, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2339, "rivales_medio": 2077.0, "partidas": 7, "puntos": 3.0, "perf": 2005, "variacion": -27.3, "nuevo_elo": 2312}, {"num": 7, "fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo_inicial": 2312, "rivales_medio": 2078.0, "partidas": 16, "puntos": 15.0, "perf": 2528, "variacion": 23.0, "nuevo_elo": 2335}], "puntos_chart": [{"fecha": "2025-09-06", "torneo": "Inicio (Torneo de la Amistad Laudio)", "elo": 2326}, {"fecha": "2025-09-06", "torneo": "Torneo de la Amistad Laudio", "elo": 2336}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2313}, {"fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo": 2313}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2304}, {"fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo": 2339}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2312}, {"fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo": 2335}]}, {"pos": 2, "id": 3, "nombre": "Aritz", "apellidos": "Zabala Pérez", "nombre_completo": "Aritz Zabala Pérez", "elo": 2326, "titulo": "PFM", "variacion": 0, "num_torneos": 68, "fecha_ultimo": "2026-04-25", "dias_inactivo": 148, "peak_elo": 2332, "peak_fecha": "2025-10-12", "peak_torneo": "Torneo de la Amistad Abadiño", "best_perf": 2521, "best_perf_torneo": "Torneo de la Amistad Abadiño", "total_partidas": 59, "total_puntos": 50.5, "efectividad": 85.6, "rivales_ponderado": 2071.4, "balance_elo": 36.9, "trayectoria": [{"num": 1, "fecha": "2025-09-06", "torneo": "Torneo de la Amistad Laudio", "elo_inicial": 2289, "rivales_medio": 2070.0, "partidas": 16, "puntos": 13.0, "perf": 2310, "variacion": 5.3, "nuevo_elo": 2294}, {"num": 2, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2294, "rivales_medio": 2071.0, "partidas": 15, "puntos": 13.5, "perf": 2421, "variacion": 17.5, "nuevo_elo": 2312}, {"num": 3, "fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo_inicial": 2312, "rivales_medio": 2071.0, "partidas": 15, "puntos": 14.0, "perf": 2521, "variacion": 20.0, "nuevo_elo": 2332}, {"num": 4, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2332, "rivales_medio": 2074.0, "partidas": 13, "puntos": 10.0, "perf": 2276, "variacion": -6.0, "nuevo_elo": 2326}], "puntos_chart": [{"fecha": "2025-09-06", "torneo": "Inicio (Torneo de la Amistad Laudio)", "elo": 2289}, {"fecha": "2025-09-06", "torneo": "Torneo de la Amistad Laudio", "elo": 2294}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2312}, {"fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo": 2332}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2326}]}, {"pos": 3, "id": 6, "nombre": "Eneko", "apellidos": "Ostolozaga Barragán", "nombre_completo": "Eneko Ostolozaga Barragán", "elo": 2293, "titulo": "", "variacion": 0, "num_torneos": 12, "fecha_ultimo": "2026-08-27", "dias_inactivo": 24, "peak_elo": 2293, "peak_fecha": "2026-08-27", "peak_torneo": "Torneo de la Amistad Aste Nagusia 2026", "best_perf": 2528, "best_perf_torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "total_partidas": 65, "total_puntos": 52.5, "efectividad": 80.8, "rivales_ponderado": 2075.7, "balance_elo": 47.8, "trayectoria": [{"num": 1, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2245, "rivales_medio": 2071.0, "partidas": 15, "puntos": 11.5, "perf": 2273, "variacion": 5.3, "nuevo_elo": 2250}, {"num": 2, "fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo_inicial": 2250, "rivales_medio": 2073.0, "partidas": 10, "puntos": 7.5, "perf": 2275, "variacion": 1.5, "nuevo_elo": 2252}, {"num": 3, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2252, "rivales_medio": 2074.0, "partidas": 13, "puntos": 8.5, "perf": 2207, "variacion": -10.7, "nuevo_elo": 2241}, {"num": 4, "fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo_inicial": 2241, "rivales_medio": 2078.0, "partidas": 16, "puntos": 15.5, "perf": 2528, "variacion": 40.0, "nuevo_elo": 2281}, {"num": 5, "fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo_inicial": 2281, "rivales_medio": 2083.0, "partidas": 11, "puntos": 9.5, "perf": 2373, "variacion": 11.7, "nuevo_elo": 2293}], "puntos_chart": [{"fecha": "2025-09-27", "torneo": "Inicio (XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete)", "elo": 2245}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2250}, {"fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo": 2252}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2241}, {"fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo": 2281}, {"fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo": 2293}]}, {"pos": 4, "id": 8, "nombre": "Ibon", "apellidos": "Barrio Ugidos", "nombre_completo": "Ibon Barrio Ugidos", "elo": 2252, "titulo": "", "variacion": 0, "num_torneos": 126, "fecha_ultimo": "2026-08-27", "dias_inactivo": 24, "peak_elo": 2252, "peak_fecha": "2026-08-27", "peak_torneo": "Torneo de la Amistad Aste Nagusia 2026", "best_perf": 2533, "best_perf_torneo": "Torneo de la Amistad Aste Nagusia 2026", "total_partidas": 44, "total_puntos": 34.0, "efectividad": 77.3, "rivales_ponderado": 2074.8, "balance_elo": 33.5, "trayectoria": [{"num": 1, "fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo_inicial": 2219, "rivales_medio": 2070.0, "partidas": 11, "puntos": 6.5, "perf": 2172, "variacion": -12.2, "nuevo_elo": 2207}, {"num": 2, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 2207, "rivales_medio": 2072.0, "partidas": 9, "puntos": 8.0, "perf": 2422, "variacion": 18.3, "nuevo_elo": 2225}, {"num": 3, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2225, "rivales_medio": 2074.0, "partidas": 13, "puntos": 9.0, "perf": 2240, "variacion": -1.6, "nuevo_elo": 2223}, {"num": 4, "fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo_inicial": 2223, "rivales_medio": 2083.0, "partidas": 11, "puntos": 10.5, "perf": 2533, "variacion": 29.0, "nuevo_elo": 2252}], "puntos_chart": [{"fecha": "2025-08-21", "torneo": "Inicio (Torneo de la amistad Aste Nagusia)", "elo": 2219}, {"fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo": 2207}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 2225}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2223}, {"fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo": 2252}]}, {"pos": 5, "id": 2, "nombre": "Asier", "apellidos": "González Pereira", "nombre_completo": "Asier González Pereira", "elo": 2248, "titulo": "PFM", "variacion": 0, "num_torneos": 55, "fecha_ultimo": "2026-07-12", "dias_inactivo": 70, "peak_elo": 2309, "peak_fecha": "2025-09-27", "peak_torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "best_perf": 2877, "best_perf_torneo": "Cuadrangular de Fiestas de Sestao", "total_partidas": 140, "total_puntos": 98.5, "efectividad": 70.4, "rivales_ponderado": 2074.5, "balance_elo": -52.5, "trayectoria": [{"num": 1, "fecha": "2025-08-19", "torneo": "Aste Nagusia 2025-Zona Albia", "elo_inicial": 2303, "rivales_medio": 2070.0, "partidas": 6, "puntos": 4.5, "perf": 2272, "variacion": -2.6, "nuevo_elo": 2300}, {"num": 2, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 2300, "rivales_medio": 2071.0, "partidas": 6, "puntos": 5.0, "perf": 2361, "variacion": 2.7, "nuevo_elo": 2303}, {"num": 3, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2303, "rivales_medio": 2071.0, "partidas": 15, "puntos": 12.5, "perf": 2361, "variacion": 6.2, "nuevo_elo": 2309}, {"num": 4, "fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo_inicial": 2309, "rivales_medio": 2071.0, "partidas": 15, "puntos": 12.0, "perf": 2311, "variacion": 0.4, "nuevo_elo": 2309}, {"num": 5, "fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo_inicial": 2309, "rivales_medio": 2073.0, "partidas": 10, "puntos": 3.5, "perf": 1940, "variacion": -44.6, "nuevo_elo": 2264}, {"num": 6, "fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo_inicial": 2264, "rivales_medio": 2071.0, "partidas": 13, "puntos": 7.5, "perf": 2173, "variacion": -22.8, "nuevo_elo": 2241}, {"num": 7, "fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo_inicial": 2241, "rivales_medio": 2074.0, "partidas": 11, "puntos": 8.0, "perf": 2276, "variacion": 0.4, "nuevo_elo": 2241}, {"num": 8, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2241, "rivales_medio": 2074.0, "partidas": 13, "puntos": 7.0, "perf": 2146, "variacion": -24.0, "nuevo_elo": 2217}, {"num": 9, "fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo_inicial": 2217, "rivales_medio": 2072.0, "partidas": 13, "puntos": 6.0, "perf": 2000, "variacion": -30.7, "nuevo_elo": 2186}, {"num": 10, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2186, "rivales_medio": 2077.0, "partidas": 7, "puntos": 7.0, "perf": 2877, "variacion": 24.4, "nuevo_elo": 2210}, {"num": 11, "fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo_inicial": 2210, "rivales_medio": 2078.0, "partidas": 16, "puntos": 15.0, "perf": 2528, "variacion": 41.0, "nuevo_elo": 2251}, {"num": 12, "fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo_inicial": 2251, "rivales_medio": 2087.0, "partidas": 15, "puntos": 10.5, "perf": 2253, "variacion": -3.0, "nuevo_elo": 2248}], "puntos_chart": [{"fecha": "2025-08-19", "torneo": "Inicio (Aste Nagusia 2025-Zona Albia)", "elo": 2303}, {"fecha": "2025-08-19", "torneo": "Aste Nagusia 2025-Zona Albia", "elo": 2300}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 2303}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2309}, {"fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo": 2309}, {"fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo": 2264}, {"fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo": 2241}, {"fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo": 2241}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2217}, {"fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo": 2186}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2210}, {"fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo": 2251}, {"fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo": 2248}]}, {"pos": 6, "id": 5, "nombre": "Juan Manuel", "apellidos": "Ruiz Abad", "nombre_completo": "Juan Manuel Ruiz Abad", "elo": 2237, "titulo": "", "variacion": 0, "num_torneos": 47, "fecha_ultimo": "2026-06-26", "dias_inactivo": 86, "peak_elo": 2284, "peak_fecha": "2025-08-18", "peak_torneo": "Lekeitioko VI. Xake Txapelketa", "best_perf": 2276, "best_perf_torneo": "Campeonato de Bizkaia de Rápidas Individual", "total_partidas": 62, "total_puntos": 42.0, "efectividad": 67.7, "rivales_ponderado": 2072.2, "balance_elo": -46.8, "trayectoria": [{"num": 1, "fecha": "2025-08-18", "torneo": "Lekeitioko VI. Xake Txapelketa", "elo_inicial": 2284, "rivales_medio": 2070.0, "partidas": 11, "puntos": 7.0, "perf": 2203, "variacion": -15.2, "nuevo_elo": 2269}, {"num": 2, "fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo_inicial": 2269, "rivales_medio": 2070.0, "partidas": 11, "puntos": 8.0, "perf": 2272, "variacion": -3.5, "nuevo_elo": 2266}, {"num": 3, "fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo_inicial": 2266, "rivales_medio": 2074.0, "partidas": 11, "puntos": 8.0, "perf": 2276, "variacion": -2.6, "nuevo_elo": 2263}, {"num": 4, "fecha": "2026-05-01", "torneo": "Legazpiko Jaietako Txapelketa", "elo_inicial": 2263, "rivales_medio": 2072.0, "partidas": 9, "puntos": 6.5, "perf": 2238, "variacion": -2.5, "nuevo_elo": 2260}, {"num": 5, "fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo_inicial": 2260, "rivales_medio": 2072.0, "partidas": 13, "puntos": 8.5, "perf": 2205, "variacion": -12.1, "nuevo_elo": 2248}, {"num": 6, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2248, "rivales_medio": 2077.0, "partidas": 7, "puntos": 4.0, "perf": 2149, "variacion": -11.0, "nuevo_elo": 2237}], "puntos_chart": [{"fecha": "2025-08-18", "torneo": "Inicio (Lekeitioko VI. Xake Txapelketa)", "elo": 2284}, {"fecha": "2025-08-18", "torneo": "Lekeitioko VI. Xake Txapelketa", "elo": 2269}, {"fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo": 2266}, {"fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo": 2263}, {"fecha": "2026-05-01", "torneo": "Legazpiko Jaietako Txapelketa", "elo": 2260}, {"fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo": 2248}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2237}]}, {"pos": 7, "id": 9, "nombre": "Modesto", "apellidos": "Pérez Fernández", "nombre_completo": "Modesto Pérez Fernández", "elo": 2234, "titulo": "", "variacion": 11, "num_torneos": 138, "fecha_ultimo": "2026-09-05", "dias_inactivo": 15, "peak_elo": 2255, "peak_fecha": "2025-12-27", "peak_torneo": "XLI Torneo de la amistad de Piélagos", "best_perf": 2870, "best_perf_torneo": "Torneo de la Amistad Laudio", "total_partidas": 104, "total_puntos": 77.0, "efectividad": 74.0, "rivales_ponderado": 2076.1, "balance_elo": 44.1, "trayectoria": [{"num": 1, "fecha": "2025-09-06", "torneo": "Torneo de la Amistad Laudio", "elo_inicial": 2191, "rivales_medio": 2070.0, "partidas": 16, "puntos": 16.0, "perf": 2870, "variacion": 53.2, "nuevo_elo": 2244}, {"num": 2, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2244, "rivales_medio": 2071.0, "partidas": 15, "puntos": 12.0, "perf": 2311, "variacion": 10.5, "nuevo_elo": 2254}, {"num": 3, "fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo_inicial": 2254, "rivales_medio": 2073.0, "partidas": 10, "puntos": 7.5, "perf": 2275, "variacion": 1.1, "nuevo_elo": 2255}, {"num": 4, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2255, "rivales_medio": 2074.0, "partidas": 13, "puntos": 4.5, "perf": 1941, "variacion": -51.1, "nuevo_elo": 2204}, {"num": 5, "fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo_inicial": 2204, "rivales_medio": 2072.0, "partidas": 13, "puntos": 9.0, "perf": 2238, "variacion": 1.4, "nuevo_elo": 2205}, {"num": 6, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2205, "rivales_medio": 2077.0, "partidas": 7, "puntos": 5.0, "perf": 2243, "variacion": 2.7, "nuevo_elo": 2208}, {"num": 7, "fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo_inicial": 2208, "rivales_medio": 2087.0, "partidas": 15, "puntos": 11.5, "perf": 2289, "variacion": 14.9, "nuevo_elo": 2223}, {"num": 8, "fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo_inicial": 2223, "rivales_medio": 2084.0, "partidas": 15, "puntos": 11.5, "perf": 2286, "variacion": 11.5, "nuevo_elo": 2234}], "puntos_chart": [{"fecha": "2025-09-06", "torneo": "Inicio (Torneo de la Amistad Laudio)", "elo": 2191}, {"fecha": "2025-09-06", "torneo": "Torneo de la Amistad Laudio", "elo": 2244}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2254}, {"fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo": 2255}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2204}, {"fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo": 2205}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2208}, {"fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo": 2223}, {"fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo": 2234}]}, {"pos": 8, "id": 40, "nombre": "Erlantz", "apellidos": "Caballero Acosta", "nombre_completo": "Erlantz Caballero Acosta", "elo": 2223, "titulo": "", "variacion": 66, "num_torneos": 6, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2223, "peak_fecha": "2026-09-19", "peak_torneo": "Gurutzeko Jaiak 2026", "best_perf": 2534, "best_perf_torneo": "Amistad Laudio", "total_partidas": 84, "total_puntos": 66.5, "efectividad": 79.2, "rivales_ponderado": 2077.9, "balance_elo": 223.6, "trayectoria": [{"num": 1, "fecha": "2026-04-06", "torneo": "Maratonda blitz di Pasquetta 2026", "elo_inicial": 2000, "rivales_medio": 2074.0, "partidas": 18, "puntos": 10.5, "perf": 2176, "variacion": 33.9, "nuevo_elo": 2034}, {"num": 2, "fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo_inicial": 2034, "rivales_medio": 2072.0, "partidas": 17, "puntos": 15.5, "perf": 2422, "variacion": 79.3, "nuevo_elo": 2113}, {"num": 3, "fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo_inicial": 2113, "rivales_medio": 2078.0, "partidas": 16, "puntos": 14.5, "perf": 2428, "variacion": 57.0, "nuevo_elo": 2170}, {"num": 4, "fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo_inicial": 2170, "rivales_medio": 2083.0, "partidas": 11, "puntos": 5.5, "perf": 2083, "variacion": -13.5, "nuevo_elo": 2157}, {"num": 5, "fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo_inicial": 2157, "rivales_medio": 2084.0, "partidas": 15, "puntos": 14.5, "perf": 2534, "variacion": 54.5, "nuevo_elo": 2211}, {"num": 6, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 2211, "rivales_medio": 2081.0, "partidas": 7, "puntos": 6.0, "perf": 2371, "variacion": 12.5, "nuevo_elo": 2223}], "puntos_chart": [{"fecha": "2026-04-06", "torneo": "Inicio (Maratonda blitz di Pasquetta 2026)", "elo": 2000}, {"fecha": "2026-04-06", "torneo": "Maratonda blitz di Pasquetta 2026", "elo": 2034}, {"fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo": 2113}, {"fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo": 2170}, {"fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo": 2157}, {"fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo": 2211}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 2223}]}, {"pos": 9, "id": 10, "nombre": "Joseba", "apellidos": "Llano Olabarrieta", "nombre_completo": "Joseba Llano Olabarrieta", "elo": 2221, "titulo": "", "variacion": 0, "num_torneos": 5, "fecha_ultimo": "2025-10-12", "dias_inactivo": 343, "peak_elo": 2221, "peak_fecha": "2025-10-12", "peak_torneo": "Torneo de la Amistad Abadiño", "best_perf": 2521, "best_perf_torneo": "Torneo de la Amistad Abadiño", "total_partidas": 30, "total_puntos": 27.5, "efectividad": 91.7, "rivales_ponderado": 2071.0, "balance_elo": 89.8, "trayectoria": [{"num": 1, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2131, "rivales_medio": 2071.0, "partidas": 15, "puntos": 13.5, "perf": 2421, "variacion": 47.2, "nuevo_elo": 2178}, {"num": 2, "fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo_inicial": 2178, "rivales_medio": 2071.0, "partidas": 15, "puntos": 14.0, "perf": 2521, "variacion": 42.6, "nuevo_elo": 2221}], "puntos_chart": [{"fecha": "2025-09-27", "torneo": "Inicio (XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete)", "elo": 2131}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2178}, {"fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo": 2221}]}, {"pos": 10, "id": 11, "nombre": "Andrés Jesús", "apellidos": "Rondón Romero", "nombre_completo": "Andrés Jesús Rondón Romero", "elo": 2181, "titulo": "", "variacion": 38, "num_torneos": 13, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2181, "peak_fecha": "2026-09-19", "peak_torneo": "Gurutzeko Jaiak 2026", "best_perf": 2362, "best_perf_torneo": "Torneo de la amistad Basauri", "total_partidas": 79, "total_puntos": 50.0, "efectividad": 63.3, "rivales_ponderado": 2075.4, "balance_elo": 50.9, "trayectoria": [{"num": 1, "fecha": "2025-08-18", "torneo": "Lekeitioko VI. Xake Txapelketa", "elo_inicial": 2130, "rivales_medio": 2070.0, "partidas": 11, "puntos": 4.0, "perf": 1937, "variacion": -24.4, "nuevo_elo": 2106}, {"num": 2, "fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo_inicial": 2106, "rivales_medio": 2074.0, "partidas": 11, "puntos": 7.0, "perf": 2207, "variacion": 9.9, "nuevo_elo": 2116}, {"num": 3, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2116, "rivales_medio": 2074.0, "partidas": 13, "puntos": 6.0, "perf": 2002, "variacion": -12.8, "nuevo_elo": 2103}, {"num": 4, "fecha": "2026-05-01", "torneo": "Legazpiko Jaietako Txapelketa", "elo_inicial": 2103, "rivales_medio": 2072.0, "partidas": 9, "puntos": 5.0, "perf": 2144, "variacion": 1.0, "nuevo_elo": 2104}, {"num": 5, "fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo_inicial": 2104, "rivales_medio": 2072.0, "partidas": 13, "puntos": 11.0, "perf": 2362, "variacion": 39.0, "nuevo_elo": 2143}, {"num": 6, "fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo_inicial": 2143, "rivales_medio": 2084.0, "partidas": 15, "puntos": 12.0, "perf": 2324, "variacion": 32.4, "nuevo_elo": 2175}, {"num": 7, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 2175, "rivales_medio": 2081.0, "partidas": 7, "puntos": 5.0, "perf": 2247, "variacion": 5.8, "nuevo_elo": 2181}], "puntos_chart": [{"fecha": "2025-08-18", "torneo": "Inicio (Lekeitioko VI. Xake Txapelketa)", "elo": 2130}, {"fecha": "2025-08-18", "torneo": "Lekeitioko VI. Xake Txapelketa", "elo": 2106}, {"fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo": 2116}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2103}, {"fecha": "2026-05-01", "torneo": "Legazpiko Jaietako Txapelketa", "elo": 2104}, {"fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo": 2143}, {"fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo": 2175}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 2181}]}, {"pos": 11, "id": 12, "nombre": "Alberto Javier", "apellidos": "Cano Cavero", "nombre_completo": "Alberto Javier Cano Cavero", "elo": 2153, "titulo": "", "variacion": -2, "num_torneos": 158, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2173, "peak_fecha": "2026-06-26", "peak_torneo": "Cuadrangular de Fiestas de Sestao", "best_perf": 2361, "best_perf_torneo": "Gurutzeko Jaiak", "total_partidas": 77, "total_puntos": 49.5, "efectividad": 64.3, "rivales_ponderado": 2075.9, "balance_elo": 33.9, "trayectoria": [{"num": 1, "fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo_inicial": 2119, "rivales_medio": 2070.0, "partidas": 11, "puntos": 7.0, "perf": 2203, "variacion": 7.3, "nuevo_elo": 2126}, {"num": 2, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 2126, "rivales_medio": 2071.0, "partidas": 6, "puntos": 5.0, "perf": 2361, "variacion": 15.3, "nuevo_elo": 2141}, {"num": 3, "fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo_inicial": 2141, "rivales_medio": 2073.0, "partidas": 9, "puntos": 5.5, "perf": 2175, "variacion": 1.3, "nuevo_elo": 2142}, {"num": 4, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 2142, "rivales_medio": 2072.0, "partidas": 9, "puntos": 5.0, "perf": 2144, "variacion": -3.9, "nuevo_elo": 2138}, {"num": 5, "fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo_inicial": 2138, "rivales_medio": 2072.0, "partidas": 13, "puntos": 10.0, "perf": 2274, "variacion": 22.8, "nuevo_elo": 2161}, {"num": 6, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2161, "rivales_medio": 2077.0, "partidas": 7, "puntos": 5.5, "perf": 2317, "variacion": 11.7, "nuevo_elo": 2173}, {"num": 7, "fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo_inicial": 2173, "rivales_medio": 2087.0, "partidas": 15, "puntos": 7.5, "perf": 2087, "variacion": -18.2, "nuevo_elo": 2155}, {"num": 8, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 2155, "rivales_medio": 2081.0, "partidas": 7, "puntos": 4.0, "perf": 2153, "variacion": -2.3, "nuevo_elo": 2153}], "puntos_chart": [{"fecha": "2025-08-21", "torneo": "Inicio (Torneo de la amistad Aste Nagusia)", "elo": 2119}, {"fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo": 2126}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 2141}, {"fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo": 2142}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 2138}, {"fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo": 2161}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2173}, {"fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo": 2155}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 2153}]}, {"pos": 12, "id": 15, "nombre": "José Manuel", "apellidos": "Villanueva Vitón", "nombre_completo": "José Manuel Villanueva Vitón", "elo": 2151, "titulo": "", "variacion": 49, "num_torneos": 87, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2153, "peak_fecha": "2026-09-05", "peak_torneo": "Amistad Laudio", "best_perf": 2374, "best_perf_torneo": "Amistad Laudio", "total_partidas": 73, "total_puntos": 48.0, "efectividad": 65.8, "rivales_ponderado": 2076.9, "balance_elo": 103.2, "trayectoria": [{"num": 1, "fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo_inicial": 2048, "rivales_medio": 2070.0, "partidas": 11, "puntos": 8.5, "perf": 2272, "variacion": 33.5, "nuevo_elo": 2081}, {"num": 2, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2081, "rivales_medio": 2071.0, "partidas": 9, "puntos": 4.0, "perf": 1999, "variacion": -6.3, "nuevo_elo": 2075}, {"num": 3, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 2075, "rivales_medio": 2072.0, "partidas": 9, "puntos": 5.5, "perf": 2174, "variacion": 9.6, "nuevo_elo": 2085}, {"num": 4, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2085, "rivales_medio": 2074.0, "partidas": 11, "puntos": 6.0, "perf": 2146, "variacion": 3.3, "nuevo_elo": 2088}, {"num": 5, "fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo_inicial": 2088, "rivales_medio": 2083.0, "partidas": 11, "puntos": 7.0, "perf": 2216, "variacion": 14.2, "nuevo_elo": 2102}, {"num": 6, "fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo_inicial": 2102, "rivales_medio": 2084.0, "partidas": 15, "puntos": 13.0, "perf": 2374, "variacion": 51.1, "nuevo_elo": 2153}, {"num": 7, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 2153, "rivales_medio": 2081.0, "partidas": 7, "puntos": 4.0, "perf": 2153, "variacion": -2.2, "nuevo_elo": 2151}], "puntos_chart": [{"fecha": "2025-08-21", "torneo": "Inicio (Torneo de la amistad Aste Nagusia)", "elo": 2048}, {"fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo": 2081}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2075}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 2085}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2088}, {"fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo": 2102}, {"fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo": 2153}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 2151}]}, {"pos": 13, "id": 17, "nombre": "Oier", "apellidos": "Fernández Paramo", "nombre_completo": "Oier Fernández Paramo", "elo": 2074, "titulo": "", "variacion": 17, "num_torneos": 17, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2074, "peak_fecha": "2026-09-19", "peak_torneo": "Gurutzeko Jaiak 2026", "best_perf": 2247, "best_perf_torneo": "Gurutzeko Jaiak 2026", "total_partidas": 27, "total_puntos": 15.5, "efectividad": 57.4, "rivales_ponderado": 2075.1, "balance_elo": 28.9, "trayectoria": [{"num": 1, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 2046, "rivales_medio": 2072.0, "partidas": 9, "puntos": 5.0, "perf": 2144, "variacion": 8.4, "nuevo_elo": 2054}, {"num": 2, "fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo_inicial": 2054, "rivales_medio": 2074.0, "partidas": 11, "puntos": 5.5, "perf": 2074, "variacion": 3.2, "nuevo_elo": 2057}, {"num": 3, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 2057, "rivales_medio": 2081.0, "partidas": 7, "puntos": 5.0, "perf": 2247, "variacion": 17.4, "nuevo_elo": 2074}], "puntos_chart": [{"fecha": "2026-01-02", "torneo": "Inicio (Torneo social de enero)", "elo": 2046}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 2054}, {"fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo": 2057}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 2074}]}, {"pos": 14, "id": 16, "nombre": "Leonardo Andrés", "apellidos": "Villanueva Bustos", "nombre_completo": "Leonardo Andrés Villanueva Bustos", "elo": 2065, "titulo": "", "variacion": 0, "num_torneos": 19, "fecha_ultimo": "2026-07-12", "dias_inactivo": 70, "peak_elo": 2085, "peak_fecha": "2026-06-26", "peak_torneo": "Cuadrangular de Fiestas de Sestao", "best_perf": 2243, "best_perf_torneo": "Cuadrangular de Fiestas de Sestao", "total_partidas": 59, "total_puntos": 30.5, "efectividad": 51.7, "rivales_ponderado": 2076.3, "balance_elo": 17.2, "trayectoria": [{"num": 1, "fecha": "2025-08-18", "torneo": "Lekeitioko VI. Xake Txapelketa", "elo_inicial": 2048, "rivales_medio": 2070.0, "partidas": 11, "puntos": 6.5, "perf": 2172, "variacion": 13.5, "nuevo_elo": 2061}, {"num": 2, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 2061, "rivales_medio": 2071.0, "partidas": 6, "puntos": 2.5, "perf": 1969, "variacion": -4.1, "nuevo_elo": 2057}, {"num": 3, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2057, "rivales_medio": 2074.0, "partidas": 11, "puntos": 7.5, "perf": 2240, "variacion": 22.7, "nuevo_elo": 2080}, {"num": 4, "fecha": "2026-05-01", "torneo": "Legazpiko Jaietako Txapelketa", "elo_inicial": 2080, "rivales_medio": 2072.0, "partidas": 9, "puntos": 3.5, "perf": 1970, "variacion": -11.0, "nuevo_elo": 2069}, {"num": 5, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2069, "rivales_medio": 2077.0, "partidas": 7, "puntos": 5.0, "perf": 2243, "variacion": 15.8, "nuevo_elo": 2085}, {"num": 6, "fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo_inicial": 2085, "rivales_medio": 2087.0, "partidas": 15, "puntos": 5.5, "perf": 1954, "variacion": -19.6, "nuevo_elo": 2065}], "puntos_chart": [{"fecha": "2025-08-18", "torneo": "Inicio (Lekeitioko VI. Xake Txapelketa)", "elo": 2048}, {"fecha": "2025-08-18", "torneo": "Lekeitioko VI. Xake Txapelketa", "elo": 2061}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 2057}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2080}, {"fecha": "2026-05-01", "torneo": "Legazpiko Jaietako Txapelketa", "elo": 2069}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2085}, {"fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo": 2065}]}, {"pos": 15, "id": 13, "nombre": "Eneko", "apellidos": "Sierra Santibañez", "nombre_completo": "Eneko Sierra Santibañez", "elo": 2057, "titulo": "", "variacion": 0, "num_torneos": 66, "fecha_ultimo": "2026-01-02", "dias_inactivo": 261, "peak_elo": 2057, "peak_fecha": "2026-01-02", "peak_torneo": "Torneo social de enero", "best_perf": 2238, "best_perf_torneo": "Torneo social de enero", "total_partidas": 9, "total_puntos": 6.5, "efectividad": 72.2, "rivales_ponderado": 2072.0, "balance_elo": 25.2, "trayectoria": [{"num": 1, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 2032, "rivales_medio": 2072.0, "partidas": 9, "puntos": 6.5, "perf": 2238, "variacion": 25.2, "nuevo_elo": 2057}], "puntos_chart": [{"fecha": "2026-01-02", "torneo": "Inicio (Torneo social de enero)", "elo": 2032}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 2057}]}, {"pos": 16, "id": 22, "nombre": "Sergio", "apellidos": "Pérez Pacheco", "nombre_completo": "Sergio Pérez Pacheco", "elo": 2053, "titulo": "", "variacion": 0, "num_torneos": 12, "fecha_ultimo": "2026-06-26", "dias_inactivo": 86, "peak_elo": 2053, "peak_fecha": "2026-06-26", "peak_torneo": "Cuadrangular de Fiestas de Sestao", "best_perf": 2210, "best_perf_torneo": "Cuadrangular de Fiestas de Sestao", "total_partidas": 37, "total_puntos": 20.5, "efectividad": 55.4, "rivales_ponderado": 2072.6, "balance_elo": 48.2, "trayectoria": [{"num": 1, "fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo_inicial": 2005, "rivales_medio": 2071.0, "partidas": 13, "puntos": 7.0, "perf": 2143, "variacion": 17.2, "nuevo_elo": 2022}, {"num": 2, "fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo_inicial": 2022, "rivales_medio": 2072.0, "partidas": 17, "puntos": 9.0, "perf": 2144, "variacion": 17.1, "nuevo_elo": 2039}, {"num": 3, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2039, "rivales_medio": 2077.0, "partidas": 7, "puntos": 4.5, "perf": 2210, "variacion": 13.8, "nuevo_elo": 2053}], "puntos_chart": [{"fecha": "2026-03-21", "torneo": "Inicio (IV Torneo Interclubes Conteneo 2026)", "elo": 2005}, {"fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo": 2022}, {"fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo": 2039}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2053}]}, {"pos": 17, "id": 14, "nombre": "Enrique", "apellidos": "Ayesta Perojo", "nombre_completo": "Enrique Ayesta Perojo", "elo": 2040, "titulo": "", "variacion": -50, "num_torneos": 57, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2090, "peak_fecha": "2025-09-13", "peak_torneo": "Gurutzeko Jaiak", "best_perf": 2361, "best_perf_torneo": "Gurutzeko Jaiak", "total_partidas": 6, "total_puntos": 5.0, "efectividad": 83.3, "rivales_ponderado": 2071.0, "balance_elo": 20.1, "trayectoria": [{"num": 1, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 2070, "rivales_medio": 2071.0, "partidas": 6, "puntos": 5.0, "perf": 2361, "variacion": 20.1, "nuevo_elo": 2090}], "puntos_chart": [{"fecha": "2025-09-13", "torneo": "Inicio (Gurutzeko Jaiak)", "elo": 2070}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 2090}]}, {"pos": 18, "id": 21, "nombre": "Lander", "apellidos": "Mañas García", "nombre_completo": "Lander Mañas García", "elo": 2033, "titulo": "", "variacion": 0, "num_torneos": 18, "fecha_ultimo": "2026-01-02", "dias_inactivo": 261, "peak_elo": 2033, "peak_fecha": "2026-01-02", "peak_torneo": "Torneo social de enero", "best_perf": 2144, "best_perf_torneo": "Torneo social de enero", "total_partidas": 19, "total_puntos": 9.0, "efectividad": 47.4, "rivales_ponderado": 2071.5, "balance_elo": 8.3, "trayectoria": [{"num": 1, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2024, "rivales_medio": 2071.0, "partidas": 10, "puntos": 4.0, "perf": 1969, "variacion": -3.3, "nuevo_elo": 2021}, {"num": 2, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 2021, "rivales_medio": 2072.0, "partidas": 9, "puntos": 5.0, "perf": 2144, "variacion": 11.6, "nuevo_elo": 2033}], "puntos_chart": [{"fecha": "2025-09-27", "torneo": "Inicio (XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete)", "elo": 2024}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2021}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 2033}]}, {"pos": 19, "id": 19, "nombre": "Mencia", "apellidos": "Montes Gimenez", "nombre_completo": "Mencia Montes Gimenez", "elo": 2030, "titulo": "", "variacion": 0, "num_torneos": 11, "fecha_ultimo": "2026-06-06", "dias_inactivo": 106, "peak_elo": 2036, "peak_fecha": "2025-09-13", "peak_torneo": "Gurutzeko Jaiak", "best_perf": 2174, "best_perf_torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "total_partidas": 69, "total_puntos": 28.5, "efectividad": 41.3, "rivales_ponderado": 2071.9, "balance_elo": 0.8, "trayectoria": [{"num": 1, "fecha": "2025-08-19", "torneo": "Aste Nagusia 2025-Zona Albia", "elo_inicial": 2029, "rivales_medio": 2070.0, "partidas": 6, "puntos": 3.0, "perf": 2070, "variacion": 3.5, "nuevo_elo": 2033}, {"num": 2, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 2033, "rivales_medio": 2071.0, "partidas": 6, "puntos": 3.0, "perf": 2071, "variacion": 3.3, "nuevo_elo": 2036}, {"num": 3, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2036, "rivales_medio": 2071.0, "partidas": 7, "puntos": 1.0, "perf": 1781, "variacion": -21.5, "nuevo_elo": 2015}, {"num": 4, "fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo_inicial": 2015, "rivales_medio": 2073.0, "partidas": 9, "puntos": 3.5, "perf": 1971, "variacion": -2.6, "nuevo_elo": 2012}, {"num": 5, "fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo_inicial": 2012, "rivales_medio": 2071.0, "partidas": 13, "puntos": 2.5, "perf": 1831, "variacion": -29.1, "nuevo_elo": 1983}, {"num": 6, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 1983, "rivales_medio": 2074.0, "partidas": 11, "puntos": 5.5, "perf": 2074, "variacion": 14.1, "nuevo_elo": 1997}, {"num": 7, "fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo_inicial": 1997, "rivales_medio": 2072.0, "partidas": 17, "puntos": 10.0, "perf": 2174, "variacion": 33.1, "nuevo_elo": 2030}], "puntos_chart": [{"fecha": "2025-08-19", "torneo": "Inicio (Aste Nagusia 2025-Zona Albia)", "elo": 2029}, {"fecha": "2025-08-19", "torneo": "Aste Nagusia 2025-Zona Albia", "elo": 2033}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 2036}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2015}, {"fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo": 2012}, {"fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo": 1983}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 1997}, {"fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo": 2030}]}, {"pos": 20, "id": 18, "nombre": "Jorge", "apellidos": "Ballesteros Caínzos", "nombre_completo": "Jorge Ballesteros Caínzos", "elo": 2023, "titulo": "", "variacion": 0, "num_torneos": 4, "fecha_ultimo": "2026-06-26", "dias_inactivo": 86, "peak_elo": 2023, "peak_fecha": "2026-06-26", "peak_torneo": "Cuadrangular de Fiestas de Sestao", "best_perf": 2243, "best_perf_torneo": "Cuadrangular de Fiestas de Sestao", "total_partidas": 7, "total_puntos": 5.0, "efectividad": 71.4, "rivales_ponderado": 2077.0, "balance_elo": 22.6, "trayectoria": [{"num": 1, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2000, "rivales_medio": 2077.0, "partidas": 7, "puntos": 5.0, "perf": 2243, "variacion": 22.6, "nuevo_elo": 2023}], "puntos_chart": [{"fecha": "2026-06-26", "torneo": "Inicio (Cuadrangular de Fiestas de Sestao)", "elo": 2000}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2023}]}, {"pos": 21, "id": 25, "nombre": "Jorge", "apellidos": "Román Mediavilla", "nombre_completo": "Jorge Román Mediavilla", "elo": 2022, "titulo": "", "variacion": 0, "num_torneos": 90, "fecha_ultimo": "2025-09-27", "dias_inactivo": 358, "peak_elo": 2022, "peak_fecha": "2025-09-27", "peak_torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "best_perf": 2173, "best_perf_torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "total_partidas": 12, "total_puntos": 7.0, "efectividad": 58.3, "rivales_ponderado": 2071.0, "balance_elo": 22.1, "trayectoria": [{"num": 1, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2000, "rivales_medio": 2071.0, "partidas": 12, "puntos": 7.0, "perf": 2173, "variacion": 22.1, "nuevo_elo": 2022}], "puntos_chart": [{"fecha": "2025-09-27", "torneo": "Inicio (XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete)", "elo": 2000}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2022}]}, {"pos": 22, "id": 38, "nombre": "Alain", "apellidos": "Ledesma Gurrea", "nombre_completo": "Alain Ledesma Gurrea", "elo": 2018, "titulo": "", "variacion": 13, "num_torneos": 4, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2018, "peak_fecha": "2026-09-19", "peak_torneo": "Gurutzeko Jaiak 2026", "best_perf": 2153, "best_perf_torneo": "Gurutzeko Jaiak 2026", "total_partidas": 34, "total_puntos": 15.0, "efectividad": 44.1, "rivales_ponderado": 2073.3, "balance_elo": 16.9, "trayectoria": [{"num": 1, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 2000, "rivales_medio": 2071.0, "partidas": 6, "puntos": 2.0, "perf": 1938, "variacion": -4.0, "nuevo_elo": 1996}, {"num": 2, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 1996, "rivales_medio": 2071.0, "partidas": 12, "puntos": 4.0, "perf": 1938, "variacion": -7.2, "nuevo_elo": 1989}, {"num": 3, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 1989, "rivales_medio": 2072.0, "partidas": 9, "puntos": 5.0, "perf": 2144, "variacion": 15.6, "nuevo_elo": 2005}, {"num": 4, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 2005, "rivales_medio": 2081.0, "partidas": 7, "puntos": 4.0, "perf": 2153, "variacion": 12.5, "nuevo_elo": 2018}], "puntos_chart": [{"fecha": "2025-09-13", "torneo": "Inicio (Gurutzeko Jaiak)", "elo": 2000}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 1996}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 1989}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 2005}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 2018}]}, {"pos": 23, "id": 39, "nombre": "Aketza", "apellidos": "Pereira López", "nombre_completo": "Aketza Pereira López", "elo": 2018, "titulo": "", "variacion": 0, "num_torneos": 2, "fecha_ultimo": "2026-04-25", "dias_inactivo": 148, "peak_elo": 2018, "peak_fecha": "2026-03-21", "peak_torneo": "IV Torneo Interclubes Conteneo 2026", "best_perf": 2143, "best_perf_torneo": "IV Torneo Interclubes Conteneo 2026", "total_partidas": 26, "total_puntos": 12.5, "efectividad": 48.1, "rivales_ponderado": 2072.5, "balance_elo": 18.5, "trayectoria": [{"num": 1, "fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo_inicial": 2000, "rivales_medio": 2071.0, "partidas": 13, "puntos": 7.0, "perf": 2143, "variacion": 18.1, "nuevo_elo": 2018}, {"num": 2, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2018, "rivales_medio": 2074.0, "partidas": 13, "puntos": 5.5, "perf": 1972, "variacion": 0.4, "nuevo_elo": 2018}], "puntos_chart": [{"fecha": "2026-03-21", "torneo": "Inicio (IV Torneo Interclubes Conteneo 2026)", "elo": 2000}, {"fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo": 2018}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2018}]}, {"pos": 24, "id": 20, "nombre": "Erlantz", "apellidos": "Arroyo Rodríguez", "nombre_completo": "Erlantz Arroyo Rodríguez", "elo": 2007, "titulo": "", "variacion": 7, "num_torneos": 69, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2007, "peak_fecha": "2026-09-19", "peak_torneo": "Gurutzeko Jaiak 2026", "best_perf": 2093, "best_perf_torneo": "Gurutzeko Jaiak 2026", "total_partidas": 7, "total_puntos": 4.0, "efectividad": 57.1, "rivales_ponderado": 2021.0, "balance_elo": 7.1, "trayectoria": [{"num": 1, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 2000, "rivales_medio": 2021.0, "partidas": 7, "puntos": 4.0, "perf": 2093, "variacion": 7.1, "nuevo_elo": 2007}], "puntos_chart": [{"fecha": "2026-09-19", "torneo": "Inicio (Gurutzeko Jaiak 2026)", "elo": 2000}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 2007}]}, {"pos": 25, "id": 24, "nombre": "Carlos", "apellidos": "Quilez Sanz", "nombre_completo": "Carlos Quilez Sanz", "elo": 2000, "titulo": "", "variacion": 0, "num_torneos": 53, "fecha_ultimo": "2024-09-01", "dias_inactivo": 749, "peak_elo": 2000, "peak_fecha": "2024-09-01", "peak_torneo": "-", "best_perf": 0, "best_perf_torneo": "-", "total_partidas": 0, "total_puntos": 0.0, "efectividad": 0.0, "rivales_ponderado": 0.0, "balance_elo": 0.0, "trayectoria": [], "puntos_chart": []}, {"pos": 26, "id": 23, "nombre": "Nicola", "apellidos": "Lococo Cobo", "nombre_completo": "Nicola Lococo Cobo", "elo": 2000, "titulo": "", "variacion": 0, "num_torneos": 1, "fecha_ultimo": "2025-09-01", "dias_inactivo": 384, "peak_elo": 2000, "peak_fecha": "2025-09-01", "peak_torneo": "-", "best_perf": 0, "best_perf_torneo": "-", "total_partidas": 0, "total_puntos": 0.0, "efectividad": 0.0, "rivales_ponderado": 0.0, "balance_elo": 0.0, "trayectoria": [], "puntos_chart": []}, {"pos": 27, "id": 27, "nombre": "June", "apellidos": "Fernández Páramo", "nombre_completo": "June Fernández Páramo", "elo": 1996, "titulo": "", "variacion": 4, "num_torneos": 2, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 1996, "peak_fecha": "2026-09-19", "peak_torneo": "Gurutzeko Jaiak 2026", "best_perf": 2009, "best_perf_torneo": "Gurutzeko Jaiak 2026", "total_partidas": 7, "total_puntos": 3.0, "efectividad": 42.9, "rivales_ponderado": 2081.0, "balance_elo": 3.8, "trayectoria": [{"num": 1, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 1992, "rivales_medio": 2081.0, "partidas": 7, "puntos": 3.0, "perf": 2009, "variacion": 3.8, "nuevo_elo": 1996}], "puntos_chart": [{"fecha": "2026-09-19", "torneo": "Inicio (Gurutzeko Jaiak 2026)", "elo": 1992}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 1996}]}, {"pos": 28, "id": 28, "nombre": "Victor Manuel", "apellidos": "Gamarra Rodríguez", "nombre_completo": "Victor Manuel Gamarra Rodríguez", "elo": 1988, "titulo": "", "variacion": 0, "num_torneos": 5, "fecha_ultimo": "2025-05-10", "dias_inactivo": 498, "peak_elo": 1988, "peak_fecha": "2025-05-10", "peak_torneo": "-", "best_perf": 0, "best_perf_torneo": "-", "total_partidas": 0, "total_puntos": 0.0, "efectividad": 0.0, "rivales_ponderado": 0.0, "balance_elo": 0.0, "trayectoria": [], "puntos_chart": []}, {"pos": 29, "id": 30, "nombre": "José Ignacio", "apellidos": "Setién Gómez", "nombre_completo": "José Ignacio Setién Gómez", "elo": 1972, "titulo": "", "variacion": 0, "num_torneos": 6, "fecha_ultimo": "2025-07-19", "dias_inactivo": 428, "peak_elo": 1972, "peak_fecha": "2025-07-19", "peak_torneo": "-", "best_perf": 0, "best_perf_torneo": "-", "total_partidas": 0, "total_puntos": 0.0, "efectividad": 0.0, "rivales_ponderado": 0.0, "balance_elo": 0.0, "trayectoria": [], "puntos_chart": []}, {"pos": 30, "id": 32, "nombre": "Markel", "apellidos": "Fernández Páramo", "nombre_completo": "Markel Fernández Páramo", "elo": 1963, "titulo": "", "variacion": 0, "num_torneos": 2, "fecha_ultimo": "2025-09-13", "dias_inactivo": 372, "peak_elo": 1963, "peak_fecha": "2025-09-13", "peak_torneo": "Gurutzeko Jaiak", "best_perf": 2071, "best_perf_torneo": "Gurutzeko Jaiak", "total_partidas": 6, "total_puntos": 3.0, "efectividad": 50.0, "rivales_ponderado": 2071.0, "balance_elo": 9.8, "trayectoria": [{"num": 1, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 1953, "rivales_medio": 2071.0, "partidas": 6, "puntos": 3.0, "perf": 2071, "variacion": 9.8, "nuevo_elo": 1963}], "puntos_chart": [{"fecha": "2025-09-13", "torneo": "Inicio (Gurutzeko Jaiak)", "elo": 1953}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 1963}]}, {"pos": 31, "id": 29, "nombre": "Juan José", "apellidos": "Fernández Fernández", "nombre_completo": "Juan José Fernández Fernández", "elo": 1959, "titulo": "", "variacion": 0, "num_torneos": 5, "fecha_ultimo": "2026-01-02", "dias_inactivo": 261, "peak_elo": 1983, "peak_fecha": "2026-01-02", "peak_torneo": "Torneo social de enero", "best_perf": 1722, "best_perf_torneo": "Torneo social de enero", "total_partidas": 9, "total_puntos": 1.0, "efectividad": 11.1, "rivales_ponderado": 2072.0, "balance_elo": -23.7, "trayectoria": [{"num": 1, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 1983, "rivales_medio": 2072.0, "partidas": 9, "puntos": 1.0, "perf": 1722, "variacion": -23.7, "nuevo_elo": 1959}], "puntos_chart": [{"fecha": "2026-01-02", "torneo": "Inicio (Torneo social de enero)", "elo": 1983}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 1959}]}, {"pos": 32, "id": 36, "nombre": "Uxue", "apellidos": "Fernández Páramo", "nombre_completo": "Uxue Fernández Páramo", "elo": 1932, "titulo": "", "variacion": 0, "num_torneos": 19, "fecha_ultimo": "2026-04-25", "dias_inactivo": 148, "peak_elo": 1933, "peak_fecha": "2025-09-27", "peak_torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "best_perf": 2071, "best_perf_torneo": "Gurutzeko Jaiak", "total_partidas": 47, "total_puntos": 16.0, "efectividad": 34.0, "rivales_ponderado": 2072.6, "balance_elo": 22.2, "trayectoria": [{"num": 1, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 1910, "rivales_medio": 2071.0, "partidas": 6, "puntos": 3.0, "perf": 2071, "variacion": 13.0, "nuevo_elo": 1923}, {"num": 2, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 1923, "rivales_medio": 2071.0, "partidas": 10, "puntos": 4.0, "perf": 1969, "variacion": 10.1, "nuevo_elo": 1933}, {"num": 3, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 1933, "rivales_medio": 2072.0, "partidas": 9, "puntos": 0.0, "perf": 1272, "variacion": -27.9, "nuevo_elo": 1905}, {"num": 4, "fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo_inicial": 1905, "rivales_medio": 2074.0, "partidas": 11, "puntos": 5.0, "perf": 2002, "variacion": 19.8, "nuevo_elo": 1925}, {"num": 5, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 1925, "rivales_medio": 2074.0, "partidas": 11, "puntos": 4.0, "perf": 1941, "variacion": 7.2, "nuevo_elo": 1932}], "puntos_chart": [{"fecha": "2025-09-13", "torneo": "Inicio (Gurutzeko Jaiak)", "elo": 1910}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 1923}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 1933}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 1905}, {"fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo": 1925}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 1932}]}, {"pos": 33, "id": 34, "nombre": "Ibai", "apellidos": "Ciprián Merlo", "nombre_completo": "Ibai Ciprián Merlo", "elo": 1932, "titulo": "", "variacion": 0, "num_torneos": 10, "fecha_ultimo": "2026-01-02", "dias_inactivo": 261, "peak_elo": 1932, "peak_fecha": "2026-01-02", "peak_torneo": "Torneo social de enero", "best_perf": 2000, "best_perf_torneo": "Torneo social de enero", "total_partidas": 9, "total_puntos": 4.0, "efectividad": 44.4, "rivales_ponderado": 2072.0, "balance_elo": 13.7, "trayectoria": [{"num": 1, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 1918, "rivales_medio": 2072.0, "partidas": 9, "puntos": 4.0, "perf": 2000, "variacion": 13.7, "nuevo_elo": 1932}], "puntos_chart": [{"fecha": "2026-01-02", "torneo": "Inicio (Torneo social de enero)", "elo": 1918}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 1932}]}, {"pos": 34, "id": 33, "nombre": "Ander", "apellidos": "Rojo", "nombre_completo": "Ander Rojo", "elo": 1927, "titulo": "", "variacion": 0, "num_torneos": 2, "fecha_ultimo": "2025-05-10", "dias_inactivo": 498, "peak_elo": 1927, "peak_fecha": "2025-05-10", "peak_torneo": "-", "best_perf": 0, "best_perf_torneo": "-", "total_partidas": 0, "total_puntos": 0.0, "efectividad": 0.0, "rivales_ponderado": 0.0, "balance_elo": 0.0, "trayectoria": [], "puntos_chart": []}, {"pos": 35, "id": 35, "nombre": "Ibai", "apellidos": "Mellado Casares", "nombre_completo": "Ibai Mellado Casares", "elo": 1911, "titulo": "", "variacion": 0, "num_torneos": 4, "fecha_ultimo": "2024-04-05", "dias_inactivo": 898, "peak_elo": 1911, "peak_fecha": "2024-04-05", "peak_torneo": "-", "best_perf": 0, "best_perf_torneo": "-", "total_partidas": 0, "total_puntos": 0.0, "efectividad": 0.0, "rivales_ponderado": 0.0, "balance_elo": 0.0, "trayectoria": [], "puntos_chart": []}], "torneos_ciclo": [{"id": 26, "nombre": "Amistad Laudio", "fecha": "2026-09-05", "participantes": 4}, {"id": 28, "nombre": "Gurutzeko Jaiak 2026", "fecha": "2026-09-19", "participantes": 8}], "historial_listas": [{"id": 15, "fecha": "2026-09-05 13:17:02", "total_socios": 36, "top3": ["Rikardo Pérez Pacheco (2335)", "Aritz Zabala Pérez (2326)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 14, "fecha": "2026-07-11 16:17:23", "total_socios": 37, "top3": ["Rikardo Pérez Pacheco (2335)", "Aritz Zabala Pérez (2326)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 13, "fecha": "2026-06-07 21:07:29", "total_socios": 38, "top3": ["Rikardo Pérez Pacheco (2339)", "Aritz Zabala Pérez (2326)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 11, "fecha": "2026-05-09 12:58:30", "total_socios": 38, "top3": ["Aritz Zabala Pérez (2326)", "Rikardo Pérez Pacheco (2304)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 10, "fecha": "2026-05-08 07:27:31", "total_socios": 38, "top3": ["Aritz Zabala Pérez (2326)", "Rikardo Pérez Pacheco (2304)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 9, "fecha": "2026-04-26 19:21:25", "total_socios": 38, "top3": ["Aritz Zabala Pérez (2332)", "Rikardo Pérez Pacheco (2313)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 8, "fecha": "2026-04-02 17:36:52", "total_socios": 39, "top3": ["Aritz Zabala Pérez (2332)", "Rikardo Pérez Pacheco (2313)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 7, "fecha": "2026-03-18 10:54:26", "total_socios": 38, "top3": ["Aritz Zabala Pérez (2332)", "Rikardo Pérez Pacheco (2313)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 6, "fecha": "2025-09-29 20:12:44", "total_socios": 38, "top3": ["Rikardo Pérez Pacheco (2313)", "Aritz Zabala Pérez (2312)", "Asier González Pereira (2309)"]}, {"id": 5, "fecha": "2025-09-17 12:35:14", "total_socios": 38, "top3": ["Rikardo Pérez Pacheco (2336)", "Xabier Barbazan Bilbao (2318)", "Asier González Pereira (2303)"]}]}
+{"fecha_emision": "20/09/2026", "hora_emision": "11:49", "stats": {"total_socios": 35, "media_elo": 2082.1, "elo_max": 2335, "torneos_ciclo": 2, "total_torneos_hist": 22}, "jugadores": [{"pos": 1, "id": 1, "nombre": "Rikardo", "apellidos": "Pérez Pacheco", "nombre_completo": "Rikardo Pérez Pacheco", "elo": 2335, "titulo": "PFM", "variacion": 0, "num_torneos": 40, "fecha_ultimo": "2026-07-04", "dias_inactivo": 78, "peak_elo": 2339, "peak_fecha": "2026-06-06", "peak_torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "best_perf": 2872, "best_perf_torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "total_partidas": 99, "total_puntos": 80.5, "efectividad": 81.3, "rivales_ponderado": 2073.0, "balance_elo": 8.8, "trayectoria": [{"num": 1, "fecha": "2025-09-06", "torneo": "Torneo de la Amistad Laudio", "elo_inicial": 2326, "rivales_medio": 2070.0, "partidas": 16, "puntos": 14.0, "perf": 2420, "variacion": 9.8, "nuevo_elo": 2336}, {"num": 2, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2336, "rivales_medio": 2071.0, "partidas": 15, "puntos": 10.0, "perf": 2204, "variacion": -23.2, "nuevo_elo": 2313}, {"num": 3, "fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo_inicial": 2313, "rivales_medio": 2071.0, "partidas": 15, "puntos": 12.0, "perf": 2311, "variacion": -0.2, "nuevo_elo": 2313}, {"num": 4, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2313, "rivales_medio": 2074.0, "partidas": 13, "puntos": 9.5, "perf": 2276, "variacion": -8.8, "nuevo_elo": 2304}, {"num": 5, "fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo_inicial": 2304, "rivales_medio": 2072.0, "partidas": 17, "puntos": 17.0, "perf": 2872, "variacion": 35.4, "nuevo_elo": 2339}, {"num": 6, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2339, "rivales_medio": 2077.0, "partidas": 7, "puntos": 3.0, "perf": 2005, "variacion": -27.3, "nuevo_elo": 2312}, {"num": 7, "fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo_inicial": 2312, "rivales_medio": 2078.0, "partidas": 16, "puntos": 15.0, "perf": 2528, "variacion": 23.0, "nuevo_elo": 2335}], "puntos_chart": [{"fecha": "2025-09-06", "torneo": "Inicio (Torneo de la Amistad Laudio)", "elo": 2326}, {"fecha": "2025-09-06", "torneo": "Torneo de la Amistad Laudio", "elo": 2336}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2313}, {"fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo": 2313}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2304}, {"fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo": 2339}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2312}, {"fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo": 2335}]}, {"pos": 2, "id": 3, "nombre": "Aritz", "apellidos": "Zabala Pérez", "nombre_completo": "Aritz Zabala Pérez", "elo": 2326, "titulo": "PFM", "variacion": 0, "num_torneos": 68, "fecha_ultimo": "2026-04-25", "dias_inactivo": 148, "peak_elo": 2332, "peak_fecha": "2025-10-12", "peak_torneo": "Torneo de la Amistad Abadiño", "best_perf": 2521, "best_perf_torneo": "Torneo de la Amistad Abadiño", "total_partidas": 59, "total_puntos": 50.5, "efectividad": 85.6, "rivales_ponderado": 2071.4, "balance_elo": 36.9, "trayectoria": [{"num": 1, "fecha": "2025-09-06", "torneo": "Torneo de la Amistad Laudio", "elo_inicial": 2289, "rivales_medio": 2070.0, "partidas": 16, "puntos": 13.0, "perf": 2310, "variacion": 5.3, "nuevo_elo": 2294}, {"num": 2, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2294, "rivales_medio": 2071.0, "partidas": 15, "puntos": 13.5, "perf": 2421, "variacion": 17.5, "nuevo_elo": 2312}, {"num": 3, "fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo_inicial": 2312, "rivales_medio": 2071.0, "partidas": 15, "puntos": 14.0, "perf": 2521, "variacion": 20.0, "nuevo_elo": 2332}, {"num": 4, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2332, "rivales_medio": 2074.0, "partidas": 13, "puntos": 10.0, "perf": 2276, "variacion": -6.0, "nuevo_elo": 2326}], "puntos_chart": [{"fecha": "2025-09-06", "torneo": "Inicio (Torneo de la Amistad Laudio)", "elo": 2289}, {"fecha": "2025-09-06", "torneo": "Torneo de la Amistad Laudio", "elo": 2294}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2312}, {"fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo": 2332}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2326}]}, {"pos": 3, "id": 6, "nombre": "Eneko", "apellidos": "Ostolozaga Barragán", "nombre_completo": "Eneko Ostolozaga Barragán", "elo": 2293, "titulo": "", "variacion": 0, "num_torneos": 12, "fecha_ultimo": "2026-08-27", "dias_inactivo": 24, "peak_elo": 2293, "peak_fecha": "2026-08-27", "peak_torneo": "Torneo de la Amistad Aste Nagusia 2026", "best_perf": 2528, "best_perf_torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "total_partidas": 65, "total_puntos": 52.5, "efectividad": 80.8, "rivales_ponderado": 2075.7, "balance_elo": 47.8, "trayectoria": [{"num": 1, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2245, "rivales_medio": 2071.0, "partidas": 15, "puntos": 11.5, "perf": 2273, "variacion": 5.3, "nuevo_elo": 2250}, {"num": 2, "fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo_inicial": 2250, "rivales_medio": 2073.0, "partidas": 10, "puntos": 7.5, "perf": 2275, "variacion": 1.5, "nuevo_elo": 2252}, {"num": 3, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2252, "rivales_medio": 2074.0, "partidas": 13, "puntos": 8.5, "perf": 2207, "variacion": -10.7, "nuevo_elo": 2241}, {"num": 4, "fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo_inicial": 2241, "rivales_medio": 2078.0, "partidas": 16, "puntos": 15.5, "perf": 2528, "variacion": 40.0, "nuevo_elo": 2281}, {"num": 5, "fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo_inicial": 2281, "rivales_medio": 2083.0, "partidas": 11, "puntos": 9.5, "perf": 2373, "variacion": 11.7, "nuevo_elo": 2293}], "puntos_chart": [{"fecha": "2025-09-27", "torneo": "Inicio (XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete)", "elo": 2245}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2250}, {"fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo": 2252}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2241}, {"fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo": 2281}, {"fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo": 2293}]}, {"pos": 4, "id": 8, "nombre": "Ibon", "apellidos": "Barrio Ugidos", "nombre_completo": "Ibon Barrio Ugidos", "elo": 2252, "titulo": "", "variacion": 0, "num_torneos": 126, "fecha_ultimo": "2026-08-27", "dias_inactivo": 24, "peak_elo": 2252, "peak_fecha": "2026-08-27", "peak_torneo": "Torneo de la Amistad Aste Nagusia 2026", "best_perf": 2533, "best_perf_torneo": "Torneo de la Amistad Aste Nagusia 2026", "total_partidas": 44, "total_puntos": 34.0, "efectividad": 77.3, "rivales_ponderado": 2074.8, "balance_elo": 33.5, "trayectoria": [{"num": 1, "fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo_inicial": 2219, "rivales_medio": 2070.0, "partidas": 11, "puntos": 6.5, "perf": 2172, "variacion": -12.2, "nuevo_elo": 2207}, {"num": 2, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 2207, "rivales_medio": 2072.0, "partidas": 9, "puntos": 8.0, "perf": 2422, "variacion": 18.3, "nuevo_elo": 2225}, {"num": 3, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2225, "rivales_medio": 2074.0, "partidas": 13, "puntos": 9.0, "perf": 2240, "variacion": -1.6, "nuevo_elo": 2223}, {"num": 4, "fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo_inicial": 2223, "rivales_medio": 2083.0, "partidas": 11, "puntos": 10.5, "perf": 2533, "variacion": 29.0, "nuevo_elo": 2252}], "puntos_chart": [{"fecha": "2025-08-21", "torneo": "Inicio (Torneo de la amistad Aste Nagusia)", "elo": 2219}, {"fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo": 2207}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 2225}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2223}, {"fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo": 2252}]}, {"pos": 5, "id": 2, "nombre": "Asier", "apellidos": "González Pereira", "nombre_completo": "Asier González Pereira", "elo": 2248, "titulo": "PFM", "variacion": 0, "num_torneos": 55, "fecha_ultimo": "2026-07-12", "dias_inactivo": 70, "peak_elo": 2309, "peak_fecha": "2025-09-27", "peak_torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "best_perf": 2877, "best_perf_torneo": "Cuadrangular de Fiestas de Sestao", "total_partidas": 140, "total_puntos": 98.5, "efectividad": 70.4, "rivales_ponderado": 2074.5, "balance_elo": -52.5, "trayectoria": [{"num": 1, "fecha": "2025-08-19", "torneo": "Aste Nagusia 2025-Zona Albia", "elo_inicial": 2303, "rivales_medio": 2070.0, "partidas": 6, "puntos": 4.5, "perf": 2272, "variacion": -2.6, "nuevo_elo": 2300}, {"num": 2, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 2300, "rivales_medio": 2071.0, "partidas": 6, "puntos": 5.0, "perf": 2361, "variacion": 2.7, "nuevo_elo": 2303}, {"num": 3, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2303, "rivales_medio": 2071.0, "partidas": 15, "puntos": 12.5, "perf": 2361, "variacion": 6.2, "nuevo_elo": 2309}, {"num": 4, "fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo_inicial": 2309, "rivales_medio": 2071.0, "partidas": 15, "puntos": 12.0, "perf": 2311, "variacion": 0.4, "nuevo_elo": 2309}, {"num": 5, "fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo_inicial": 2309, "rivales_medio": 2073.0, "partidas": 10, "puntos": 3.5, "perf": 1940, "variacion": -44.6, "nuevo_elo": 2264}, {"num": 6, "fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo_inicial": 2264, "rivales_medio": 2071.0, "partidas": 13, "puntos": 7.5, "perf": 2173, "variacion": -22.8, "nuevo_elo": 2241}, {"num": 7, "fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo_inicial": 2241, "rivales_medio": 2074.0, "partidas": 11, "puntos": 8.0, "perf": 2276, "variacion": 0.4, "nuevo_elo": 2241}, {"num": 8, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2241, "rivales_medio": 2074.0, "partidas": 13, "puntos": 7.0, "perf": 2146, "variacion": -24.0, "nuevo_elo": 2217}, {"num": 9, "fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo_inicial": 2217, "rivales_medio": 2072.0, "partidas": 13, "puntos": 6.0, "perf": 2000, "variacion": -30.7, "nuevo_elo": 2186}, {"num": 10, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2186, "rivales_medio": 2077.0, "partidas": 7, "puntos": 7.0, "perf": 2877, "variacion": 24.4, "nuevo_elo": 2210}, {"num": 11, "fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo_inicial": 2210, "rivales_medio": 2078.0, "partidas": 16, "puntos": 15.0, "perf": 2528, "variacion": 41.0, "nuevo_elo": 2251}, {"num": 12, "fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo_inicial": 2251, "rivales_medio": 2087.0, "partidas": 15, "puntos": 10.5, "perf": 2253, "variacion": -3.0, "nuevo_elo": 2248}], "puntos_chart": [{"fecha": "2025-08-19", "torneo": "Inicio (Aste Nagusia 2025-Zona Albia)", "elo": 2303}, {"fecha": "2025-08-19", "torneo": "Aste Nagusia 2025-Zona Albia", "elo": 2300}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 2303}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2309}, {"fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo": 2309}, {"fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo": 2264}, {"fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo": 2241}, {"fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo": 2241}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2217}, {"fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo": 2186}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2210}, {"fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo": 2251}, {"fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo": 2248}]}, {"pos": 6, "id": 5, "nombre": "Juan Manuel", "apellidos": "Ruiz Abad", "nombre_completo": "Juan Manuel Ruiz Abad", "elo": 2237, "titulo": "", "variacion": 0, "num_torneos": 47, "fecha_ultimo": "2026-06-26", "dias_inactivo": 86, "peak_elo": 2284, "peak_fecha": "2025-08-18", "peak_torneo": "Lekeitioko VI. Xake Txapelketa", "best_perf": 2276, "best_perf_torneo": "Campeonato de Bizkaia de Rápidas Individual", "total_partidas": 62, "total_puntos": 42.0, "efectividad": 67.7, "rivales_ponderado": 2072.2, "balance_elo": -46.8, "trayectoria": [{"num": 1, "fecha": "2025-08-18", "torneo": "Lekeitioko VI. Xake Txapelketa", "elo_inicial": 2284, "rivales_medio": 2070.0, "partidas": 11, "puntos": 7.0, "perf": 2203, "variacion": -15.2, "nuevo_elo": 2269}, {"num": 2, "fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo_inicial": 2269, "rivales_medio": 2070.0, "partidas": 11, "puntos": 8.0, "perf": 2272, "variacion": -3.5, "nuevo_elo": 2266}, {"num": 3, "fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo_inicial": 2266, "rivales_medio": 2074.0, "partidas": 11, "puntos": 8.0, "perf": 2276, "variacion": -2.6, "nuevo_elo": 2263}, {"num": 4, "fecha": "2026-05-01", "torneo": "Legazpiko Jaietako Txapelketa", "elo_inicial": 2263, "rivales_medio": 2072.0, "partidas": 9, "puntos": 6.5, "perf": 2238, "variacion": -2.5, "nuevo_elo": 2260}, {"num": 5, "fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo_inicial": 2260, "rivales_medio": 2072.0, "partidas": 13, "puntos": 8.5, "perf": 2205, "variacion": -12.1, "nuevo_elo": 2248}, {"num": 6, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2248, "rivales_medio": 2077.0, "partidas": 7, "puntos": 4.0, "perf": 2149, "variacion": -11.0, "nuevo_elo": 2237}], "puntos_chart": [{"fecha": "2025-08-18", "torneo": "Inicio (Lekeitioko VI. Xake Txapelketa)", "elo": 2284}, {"fecha": "2025-08-18", "torneo": "Lekeitioko VI. Xake Txapelketa", "elo": 2269}, {"fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo": 2266}, {"fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo": 2263}, {"fecha": "2026-05-01", "torneo": "Legazpiko Jaietako Txapelketa", "elo": 2260}, {"fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo": 2248}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2237}]}, {"pos": 7, "id": 9, "nombre": "Modesto", "apellidos": "Pérez Fernández", "nombre_completo": "Modesto Pérez Fernández", "elo": 2234, "titulo": "", "variacion": 11, "num_torneos": 138, "fecha_ultimo": "2026-09-05", "dias_inactivo": 15, "peak_elo": 2255, "peak_fecha": "2025-12-27", "peak_torneo": "XLI Torneo de la amistad de Piélagos", "best_perf": 2870, "best_perf_torneo": "Torneo de la Amistad Laudio", "total_partidas": 104, "total_puntos": 77.0, "efectividad": 74.0, "rivales_ponderado": 2076.1, "balance_elo": 44.1, "trayectoria": [{"num": 1, "fecha": "2025-09-06", "torneo": "Torneo de la Amistad Laudio", "elo_inicial": 2191, "rivales_medio": 2070.0, "partidas": 16, "puntos": 16.0, "perf": 2870, "variacion": 53.2, "nuevo_elo": 2244}, {"num": 2, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2244, "rivales_medio": 2071.0, "partidas": 15, "puntos": 12.0, "perf": 2311, "variacion": 10.5, "nuevo_elo": 2254}, {"num": 3, "fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo_inicial": 2254, "rivales_medio": 2073.0, "partidas": 10, "puntos": 7.5, "perf": 2275, "variacion": 1.1, "nuevo_elo": 2255}, {"num": 4, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2255, "rivales_medio": 2074.0, "partidas": 13, "puntos": 4.5, "perf": 1941, "variacion": -51.1, "nuevo_elo": 2204}, {"num": 5, "fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo_inicial": 2204, "rivales_medio": 2072.0, "partidas": 13, "puntos": 9.0, "perf": 2238, "variacion": 1.4, "nuevo_elo": 2205}, {"num": 6, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2205, "rivales_medio": 2077.0, "partidas": 7, "puntos": 5.0, "perf": 2243, "variacion": 2.7, "nuevo_elo": 2208}, {"num": 7, "fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo_inicial": 2208, "rivales_medio": 2087.0, "partidas": 15, "puntos": 11.5, "perf": 2289, "variacion": 14.9, "nuevo_elo": 2223}, {"num": 8, "fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo_inicial": 2223, "rivales_medio": 2084.0, "partidas": 15, "puntos": 11.5, "perf": 2286, "variacion": 11.5, "nuevo_elo": 2234}], "puntos_chart": [{"fecha": "2025-09-06", "torneo": "Inicio (Torneo de la Amistad Laudio)", "elo": 2191}, {"fecha": "2025-09-06", "torneo": "Torneo de la Amistad Laudio", "elo": 2244}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2254}, {"fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo": 2255}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2204}, {"fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo": 2205}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2208}, {"fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo": 2223}, {"fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo": 2234}]}, {"pos": 8, "id": 40, "nombre": "Erlantz", "apellidos": "Caballero Acosta", "nombre_completo": "Erlantz Caballero Acosta", "elo": 2223, "titulo": "", "variacion": 66, "num_torneos": 6, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2223, "peak_fecha": "2026-09-19", "peak_torneo": "Gurutzeko Jaiak 2026", "best_perf": 2534, "best_perf_torneo": "Amistad Laudio", "total_partidas": 84, "total_puntos": 66.5, "efectividad": 79.2, "rivales_ponderado": 2077.9, "balance_elo": 223.6, "trayectoria": [{"num": 1, "fecha": "2026-04-06", "torneo": "Maratonda blitz di Pasquetta 2026", "elo_inicial": 2000, "rivales_medio": 2074.0, "partidas": 18, "puntos": 10.5, "perf": 2176, "variacion": 33.9, "nuevo_elo": 2034}, {"num": 2, "fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo_inicial": 2034, "rivales_medio": 2072.0, "partidas": 17, "puntos": 15.5, "perf": 2422, "variacion": 79.3, "nuevo_elo": 2113}, {"num": 3, "fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo_inicial": 2113, "rivales_medio": 2078.0, "partidas": 16, "puntos": 14.5, "perf": 2428, "variacion": 57.0, "nuevo_elo": 2170}, {"num": 4, "fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo_inicial": 2170, "rivales_medio": 2083.0, "partidas": 11, "puntos": 5.5, "perf": 2083, "variacion": -13.5, "nuevo_elo": 2157}, {"num": 5, "fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo_inicial": 2157, "rivales_medio": 2084.0, "partidas": 15, "puntos": 14.5, "perf": 2534, "variacion": 54.5, "nuevo_elo": 2211}, {"num": 6, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 2211, "rivales_medio": 2081.0, "partidas": 7, "puntos": 6.0, "perf": 2371, "variacion": 12.5, "nuevo_elo": 2223}], "puntos_chart": [{"fecha": "2026-04-06", "torneo": "Inicio (Maratonda blitz di Pasquetta 2026)", "elo": 2000}, {"fecha": "2026-04-06", "torneo": "Maratonda blitz di Pasquetta 2026", "elo": 2034}, {"fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo": 2113}, {"fecha": "2026-07-04", "torneo": "40. Eibarko Hiria Xake Txapelketa Jose Mari Kruzetaren oroimenez", "elo": 2170}, {"fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo": 2157}, {"fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo": 2211}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 2223}]}, {"pos": 9, "id": 10, "nombre": "Joseba", "apellidos": "Llano Olabarrieta", "nombre_completo": "Joseba Llano Olabarrieta", "elo": 2221, "titulo": "", "variacion": 0, "num_torneos": 5, "fecha_ultimo": "2025-10-12", "dias_inactivo": 343, "peak_elo": 2221, "peak_fecha": "2025-10-12", "peak_torneo": "Torneo de la Amistad Abadiño", "best_perf": 2521, "best_perf_torneo": "Torneo de la Amistad Abadiño", "total_partidas": 30, "total_puntos": 27.5, "efectividad": 91.7, "rivales_ponderado": 2071.0, "balance_elo": 89.8, "trayectoria": [{"num": 1, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2131, "rivales_medio": 2071.0, "partidas": 15, "puntos": 13.5, "perf": 2421, "variacion": 47.2, "nuevo_elo": 2178}, {"num": 2, "fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo_inicial": 2178, "rivales_medio": 2071.0, "partidas": 15, "puntos": 14.0, "perf": 2521, "variacion": 42.6, "nuevo_elo": 2221}], "puntos_chart": [{"fecha": "2025-09-27", "torneo": "Inicio (XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete)", "elo": 2131}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2178}, {"fecha": "2025-10-12", "torneo": "Torneo de la Amistad Abadiño", "elo": 2221}]}, {"pos": 10, "id": 11, "nombre": "Andrés Jesús", "apellidos": "Rondón Romero", "nombre_completo": "Andrés Jesús Rondón Romero", "elo": 2181, "titulo": "", "variacion": 38, "num_torneos": 13, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2181, "peak_fecha": "2026-09-19", "peak_torneo": "Gurutzeko Jaiak 2026", "best_perf": 2362, "best_perf_torneo": "Torneo de la amistad Basauri", "total_partidas": 79, "total_puntos": 50.0, "efectividad": 63.3, "rivales_ponderado": 2075.4, "balance_elo": 50.9, "trayectoria": [{"num": 1, "fecha": "2025-08-18", "torneo": "Lekeitioko VI. Xake Txapelketa", "elo_inicial": 2130, "rivales_medio": 2070.0, "partidas": 11, "puntos": 4.0, "perf": 1937, "variacion": -24.4, "nuevo_elo": 2106}, {"num": 2, "fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo_inicial": 2106, "rivales_medio": 2074.0, "partidas": 11, "puntos": 7.0, "perf": 2207, "variacion": 9.9, "nuevo_elo": 2116}, {"num": 3, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2116, "rivales_medio": 2074.0, "partidas": 13, "puntos": 6.0, "perf": 2002, "variacion": -12.8, "nuevo_elo": 2103}, {"num": 4, "fecha": "2026-05-01", "torneo": "Legazpiko Jaietako Txapelketa", "elo_inicial": 2103, "rivales_medio": 2072.0, "partidas": 9, "puntos": 5.0, "perf": 2144, "variacion": 1.0, "nuevo_elo": 2104}, {"num": 5, "fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo_inicial": 2104, "rivales_medio": 2072.0, "partidas": 13, "puntos": 11.0, "perf": 2362, "variacion": 39.0, "nuevo_elo": 2143}, {"num": 6, "fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo_inicial": 2143, "rivales_medio": 2084.0, "partidas": 15, "puntos": 12.0, "perf": 2324, "variacion": 32.4, "nuevo_elo": 2175}, {"num": 7, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 2175, "rivales_medio": 2081.0, "partidas": 7, "puntos": 5.0, "perf": 2247, "variacion": 5.8, "nuevo_elo": 2181}], "puntos_chart": [{"fecha": "2025-08-18", "torneo": "Inicio (Lekeitioko VI. Xake Txapelketa)", "elo": 2130}, {"fecha": "2025-08-18", "torneo": "Lekeitioko VI. Xake Txapelketa", "elo": 2106}, {"fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo": 2116}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2103}, {"fecha": "2026-05-01", "torneo": "Legazpiko Jaietako Txapelketa", "elo": 2104}, {"fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo": 2143}, {"fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo": 2175}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 2181}]}, {"pos": 11, "id": 12, "nombre": "Alberto Javier", "apellidos": "Cano Cavero", "nombre_completo": "Alberto Javier Cano Cavero", "elo": 2153, "titulo": "", "variacion": -2, "num_torneos": 158, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2173, "peak_fecha": "2026-06-26", "peak_torneo": "Cuadrangular de Fiestas de Sestao", "best_perf": 2361, "best_perf_torneo": "Gurutzeko Jaiak", "total_partidas": 77, "total_puntos": 49.5, "efectividad": 64.3, "rivales_ponderado": 2075.9, "balance_elo": 33.9, "trayectoria": [{"num": 1, "fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo_inicial": 2119, "rivales_medio": 2070.0, "partidas": 11, "puntos": 7.0, "perf": 2203, "variacion": 7.3, "nuevo_elo": 2126}, {"num": 2, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 2126, "rivales_medio": 2071.0, "partidas": 6, "puntos": 5.0, "perf": 2361, "variacion": 15.3, "nuevo_elo": 2141}, {"num": 3, "fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo_inicial": 2141, "rivales_medio": 2073.0, "partidas": 9, "puntos": 5.5, "perf": 2175, "variacion": 1.3, "nuevo_elo": 2142}, {"num": 4, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 2142, "rivales_medio": 2072.0, "partidas": 9, "puntos": 5.0, "perf": 2144, "variacion": -3.9, "nuevo_elo": 2138}, {"num": 5, "fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo_inicial": 2138, "rivales_medio": 2072.0, "partidas": 13, "puntos": 10.0, "perf": 2274, "variacion": 22.8, "nuevo_elo": 2161}, {"num": 6, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2161, "rivales_medio": 2077.0, "partidas": 7, "puntos": 5.5, "perf": 2317, "variacion": 11.7, "nuevo_elo": 2173}, {"num": 7, "fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo_inicial": 2173, "rivales_medio": 2087.0, "partidas": 15, "puntos": 7.5, "perf": 2087, "variacion": -18.2, "nuevo_elo": 2155}, {"num": 8, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 2155, "rivales_medio": 2081.0, "partidas": 7, "puntos": 4.0, "perf": 2153, "variacion": -2.3, "nuevo_elo": 2153}], "puntos_chart": [{"fecha": "2025-08-21", "torneo": "Inicio (Torneo de la amistad Aste Nagusia)", "elo": 2119}, {"fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo": 2126}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 2141}, {"fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo": 2142}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 2138}, {"fecha": "2026-05-09", "torneo": "Torneo de la amistad Basauri", "elo": 2161}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2173}, {"fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo": 2155}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 2153}]}, {"pos": 12, "id": 15, "nombre": "José Manuel", "apellidos": "Villanueva Vitón", "nombre_completo": "José Manuel Villanueva Vitón", "elo": 2151, "titulo": "", "variacion": 49, "num_torneos": 87, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2153, "peak_fecha": "2026-09-05", "peak_torneo": "Amistad Laudio", "best_perf": 2374, "best_perf_torneo": "Amistad Laudio", "total_partidas": 73, "total_puntos": 48.0, "efectividad": 65.8, "rivales_ponderado": 2076.9, "balance_elo": 103.2, "trayectoria": [{"num": 1, "fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo_inicial": 2048, "rivales_medio": 2070.0, "partidas": 11, "puntos": 8.5, "perf": 2272, "variacion": 33.5, "nuevo_elo": 2081}, {"num": 2, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2081, "rivales_medio": 2071.0, "partidas": 9, "puntos": 4.0, "perf": 1999, "variacion": -6.3, "nuevo_elo": 2075}, {"num": 3, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 2075, "rivales_medio": 2072.0, "partidas": 9, "puntos": 5.5, "perf": 2174, "variacion": 9.6, "nuevo_elo": 2085}, {"num": 4, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2085, "rivales_medio": 2074.0, "partidas": 11, "puntos": 6.0, "perf": 2146, "variacion": 3.3, "nuevo_elo": 2088}, {"num": 5, "fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo_inicial": 2088, "rivales_medio": 2083.0, "partidas": 11, "puntos": 7.0, "perf": 2216, "variacion": 14.2, "nuevo_elo": 2102}, {"num": 6, "fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo_inicial": 2102, "rivales_medio": 2084.0, "partidas": 15, "puntos": 13.0, "perf": 2374, "variacion": 51.1, "nuevo_elo": 2153}, {"num": 7, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 2153, "rivales_medio": 2081.0, "partidas": 7, "puntos": 4.0, "perf": 2153, "variacion": -2.2, "nuevo_elo": 2151}], "puntos_chart": [{"fecha": "2025-08-21", "torneo": "Inicio (Torneo de la amistad Aste Nagusia)", "elo": 2048}, {"fecha": "2025-08-21", "torneo": "Torneo de la amistad Aste Nagusia", "elo": 2081}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2075}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 2085}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2088}, {"fecha": "2026-08-27", "torneo": "Torneo de la Amistad Aste Nagusia 2026", "elo": 2102}, {"fecha": "2026-09-05", "torneo": "Amistad Laudio", "elo": 2153}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 2151}]}, {"pos": 13, "id": 17, "nombre": "Oier", "apellidos": "Fernández Paramo", "nombre_completo": "Oier Fernández Paramo", "elo": 2074, "titulo": "", "variacion": 17, "num_torneos": 17, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2074, "peak_fecha": "2026-09-19", "peak_torneo": "Gurutzeko Jaiak 2026", "best_perf": 2247, "best_perf_torneo": "Gurutzeko Jaiak 2026", "total_partidas": 27, "total_puntos": 15.5, "efectividad": 57.4, "rivales_ponderado": 2075.1, "balance_elo": 28.9, "trayectoria": [{"num": 1, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 2046, "rivales_medio": 2072.0, "partidas": 9, "puntos": 5.0, "perf": 2144, "variacion": 8.4, "nuevo_elo": 2054}, {"num": 2, "fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo_inicial": 2054, "rivales_medio": 2074.0, "partidas": 11, "puntos": 5.5, "perf": 2074, "variacion": 3.2, "nuevo_elo": 2057}, {"num": 3, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 2057, "rivales_medio": 2081.0, "partidas": 7, "puntos": 5.0, "perf": 2247, "variacion": 17.4, "nuevo_elo": 2074}], "puntos_chart": [{"fecha": "2026-01-02", "torneo": "Inicio (Torneo social de enero)", "elo": 2046}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 2054}, {"fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo": 2057}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 2074}]}, {"pos": 14, "id": 16, "nombre": "Leonardo Andrés", "apellidos": "Villanueva Bustos", "nombre_completo": "Leonardo Andrés Villanueva Bustos", "elo": 2065, "titulo": "", "variacion": 0, "num_torneos": 19, "fecha_ultimo": "2026-07-12", "dias_inactivo": 70, "peak_elo": 2085, "peak_fecha": "2026-06-26", "peak_torneo": "Cuadrangular de Fiestas de Sestao", "best_perf": 2243, "best_perf_torneo": "Cuadrangular de Fiestas de Sestao", "total_partidas": 59, "total_puntos": 30.5, "efectividad": 51.7, "rivales_ponderado": 2076.3, "balance_elo": 17.2, "trayectoria": [{"num": 1, "fecha": "2025-08-18", "torneo": "Lekeitioko VI. Xake Txapelketa", "elo_inicial": 2048, "rivales_medio": 2070.0, "partidas": 11, "puntos": 6.5, "perf": 2172, "variacion": 13.5, "nuevo_elo": 2061}, {"num": 2, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 2061, "rivales_medio": 2071.0, "partidas": 6, "puntos": 2.5, "perf": 1969, "variacion": -4.1, "nuevo_elo": 2057}, {"num": 3, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2057, "rivales_medio": 2074.0, "partidas": 11, "puntos": 7.5, "perf": 2240, "variacion": 22.7, "nuevo_elo": 2080}, {"num": 4, "fecha": "2026-05-01", "torneo": "Legazpiko Jaietako Txapelketa", "elo_inicial": 2080, "rivales_medio": 2072.0, "partidas": 9, "puntos": 3.5, "perf": 1970, "variacion": -11.0, "nuevo_elo": 2069}, {"num": 5, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2069, "rivales_medio": 2077.0, "partidas": 7, "puntos": 5.0, "perf": 2243, "variacion": 15.8, "nuevo_elo": 2085}, {"num": 6, "fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo_inicial": 2085, "rivales_medio": 2087.0, "partidas": 15, "puntos": 5.5, "perf": 1954, "variacion": -19.6, "nuevo_elo": 2065}], "puntos_chart": [{"fecha": "2025-08-18", "torneo": "Inicio (Lekeitioko VI. Xake Txapelketa)", "elo": 2048}, {"fecha": "2025-08-18", "torneo": "Lekeitioko VI. Xake Txapelketa", "elo": 2061}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 2057}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2080}, {"fecha": "2026-05-01", "torneo": "Legazpiko Jaietako Txapelketa", "elo": 2069}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2085}, {"fecha": "2026-07-12", "torneo": "XXIII San Balentín de Berriotxoa (Elorrio)", "elo": 2065}]}, {"pos": 15, "id": 13, "nombre": "Eneko", "apellidos": "Sierra Santibañez", "nombre_completo": "Eneko Sierra Santibañez", "elo": 2057, "titulo": "", "variacion": 0, "num_torneos": 66, "fecha_ultimo": "2026-01-02", "dias_inactivo": 261, "peak_elo": 2057, "peak_fecha": "2026-01-02", "peak_torneo": "Torneo social de enero", "best_perf": 2238, "best_perf_torneo": "Torneo social de enero", "total_partidas": 9, "total_puntos": 6.5, "efectividad": 72.2, "rivales_ponderado": 2072.0, "balance_elo": 25.2, "trayectoria": [{"num": 1, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 2032, "rivales_medio": 2072.0, "partidas": 9, "puntos": 6.5, "perf": 2238, "variacion": 25.2, "nuevo_elo": 2057}], "puntos_chart": [{"fecha": "2026-01-02", "torneo": "Inicio (Torneo social de enero)", "elo": 2032}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 2057}]}, {"pos": 16, "id": 22, "nombre": "Sergio", "apellidos": "Pérez Pacheco", "nombre_completo": "Sergio Pérez Pacheco", "elo": 2053, "titulo": "", "variacion": 0, "num_torneos": 12, "fecha_ultimo": "2026-06-26", "dias_inactivo": 86, "peak_elo": 2053, "peak_fecha": "2026-06-26", "peak_torneo": "Cuadrangular de Fiestas de Sestao", "best_perf": 2210, "best_perf_torneo": "Cuadrangular de Fiestas de Sestao", "total_partidas": 37, "total_puntos": 20.5, "efectividad": 55.4, "rivales_ponderado": 2072.6, "balance_elo": 48.2, "trayectoria": [{"num": 1, "fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo_inicial": 2005, "rivales_medio": 2071.0, "partidas": 13, "puntos": 7.0, "perf": 2143, "variacion": 17.2, "nuevo_elo": 2022}, {"num": 2, "fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo_inicial": 2022, "rivales_medio": 2072.0, "partidas": 17, "puntos": 9.0, "perf": 2144, "variacion": 17.1, "nuevo_elo": 2039}, {"num": 3, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2039, "rivales_medio": 2077.0, "partidas": 7, "puntos": 4.5, "perf": 2210, "variacion": 13.8, "nuevo_elo": 2053}], "puntos_chart": [{"fecha": "2026-03-21", "torneo": "Inicio (IV Torneo Interclubes Conteneo 2026)", "elo": 2005}, {"fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo": 2022}, {"fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo": 2039}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2053}]}, {"pos": 17, "id": 14, "nombre": "Enrique", "apellidos": "Ayesta Perojo", "nombre_completo": "Enrique Ayesta Perojo", "elo": 2040, "titulo": "", "variacion": -50, "num_torneos": 57, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2090, "peak_fecha": "2025-09-13", "peak_torneo": "Gurutzeko Jaiak", "best_perf": 2361, "best_perf_torneo": "Gurutzeko Jaiak", "total_partidas": 6, "total_puntos": 5.0, "efectividad": 83.3, "rivales_ponderado": 2071.0, "balance_elo": 20.1, "trayectoria": [{"num": 1, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 2070, "rivales_medio": 2071.0, "partidas": 6, "puntos": 5.0, "perf": 2361, "variacion": 20.1, "nuevo_elo": 2090}], "puntos_chart": [{"fecha": "2025-09-13", "torneo": "Inicio (Gurutzeko Jaiak)", "elo": 2070}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 2090}]}, {"pos": 18, "id": 21, "nombre": "Lander", "apellidos": "Mañas García", "nombre_completo": "Lander Mañas García", "elo": 2033, "titulo": "", "variacion": 0, "num_torneos": 18, "fecha_ultimo": "2026-01-02", "dias_inactivo": 261, "peak_elo": 2033, "peak_fecha": "2026-01-02", "peak_torneo": "Torneo social de enero", "best_perf": 2144, "best_perf_torneo": "Torneo social de enero", "total_partidas": 19, "total_puntos": 9.0, "efectividad": 47.4, "rivales_ponderado": 2071.5, "balance_elo": 8.3, "trayectoria": [{"num": 1, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2024, "rivales_medio": 2071.0, "partidas": 10, "puntos": 4.0, "perf": 1969, "variacion": -3.3, "nuevo_elo": 2021}, {"num": 2, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 2021, "rivales_medio": 2072.0, "partidas": 9, "puntos": 5.0, "perf": 2144, "variacion": 11.6, "nuevo_elo": 2033}], "puntos_chart": [{"fecha": "2025-09-27", "torneo": "Inicio (XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete)", "elo": 2024}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2021}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 2033}]}, {"pos": 19, "id": 19, "nombre": "Mencia", "apellidos": "Montes Gimenez", "nombre_completo": "Mencia Montes Gimenez", "elo": 2030, "titulo": "", "variacion": 0, "num_torneos": 11, "fecha_ultimo": "2026-06-06", "dias_inactivo": 106, "peak_elo": 2036, "peak_fecha": "2025-09-13", "peak_torneo": "Gurutzeko Jaiak", "best_perf": 2174, "best_perf_torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "total_partidas": 69, "total_puntos": 28.5, "efectividad": 41.3, "rivales_ponderado": 2071.9, "balance_elo": 0.8, "trayectoria": [{"num": 1, "fecha": "2025-08-19", "torneo": "Aste Nagusia 2025-Zona Albia", "elo_inicial": 2029, "rivales_medio": 2070.0, "partidas": 6, "puntos": 3.0, "perf": 2070, "variacion": 3.5, "nuevo_elo": 2033}, {"num": 2, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 2033, "rivales_medio": 2071.0, "partidas": 6, "puntos": 3.0, "perf": 2071, "variacion": 3.3, "nuevo_elo": 2036}, {"num": 3, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2036, "rivales_medio": 2071.0, "partidas": 7, "puntos": 1.0, "perf": 1781, "variacion": -21.5, "nuevo_elo": 2015}, {"num": 4, "fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo_inicial": 2015, "rivales_medio": 2073.0, "partidas": 9, "puntos": 3.5, "perf": 1971, "variacion": -2.6, "nuevo_elo": 2012}, {"num": 5, "fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo_inicial": 2012, "rivales_medio": 2071.0, "partidas": 13, "puntos": 2.5, "perf": 1831, "variacion": -29.1, "nuevo_elo": 1983}, {"num": 6, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 1983, "rivales_medio": 2074.0, "partidas": 11, "puntos": 5.5, "perf": 2074, "variacion": 14.1, "nuevo_elo": 1997}, {"num": 7, "fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo_inicial": 1997, "rivales_medio": 2072.0, "partidas": 17, "puntos": 10.0, "perf": 2174, "variacion": 33.1, "nuevo_elo": 2030}], "puntos_chart": [{"fecha": "2025-08-19", "torneo": "Inicio (Aste Nagusia 2025-Zona Albia)", "elo": 2029}, {"fecha": "2025-08-19", "torneo": "Aste Nagusia 2025-Zona Albia", "elo": 2033}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 2036}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2015}, {"fecha": "2025-12-27", "torneo": "XLI Torneo de la amistad de Piélagos", "elo": 2012}, {"fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo": 1983}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 1997}, {"fecha": "2026-06-06", "torneo": "XXVI Torneo San Antonio de Ajedrez de Gallarta 2026", "elo": 2030}]}, {"pos": 20, "id": 18, "nombre": "Jorge", "apellidos": "Ballesteros Caínzos", "nombre_completo": "Jorge Ballesteros Caínzos", "elo": 2023, "titulo": "", "variacion": 0, "num_torneos": 4, "fecha_ultimo": "2026-06-26", "dias_inactivo": 86, "peak_elo": 2023, "peak_fecha": "2026-06-26", "peak_torneo": "Cuadrangular de Fiestas de Sestao", "best_perf": 2243, "best_perf_torneo": "Cuadrangular de Fiestas de Sestao", "total_partidas": 7, "total_puntos": 5.0, "efectividad": 71.4, "rivales_ponderado": 2077.0, "balance_elo": 22.6, "trayectoria": [{"num": 1, "fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo_inicial": 2000, "rivales_medio": 2077.0, "partidas": 7, "puntos": 5.0, "perf": 2243, "variacion": 22.6, "nuevo_elo": 2023}], "puntos_chart": [{"fecha": "2026-06-26", "torneo": "Inicio (Cuadrangular de Fiestas de Sestao)", "elo": 2000}, {"fecha": "2026-06-26", "torneo": "Cuadrangular de Fiestas de Sestao", "elo": 2023}]}, {"pos": 21, "id": 25, "nombre": "Jorge", "apellidos": "Román Mediavilla", "nombre_completo": "Jorge Román Mediavilla", "elo": 2022, "titulo": "", "variacion": 0, "num_torneos": 90, "fecha_ultimo": "2025-09-27", "dias_inactivo": 358, "peak_elo": 2022, "peak_fecha": "2025-09-27", "peak_torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "best_perf": 2173, "best_perf_torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "total_partidas": 12, "total_puntos": 7.0, "efectividad": 58.3, "rivales_ponderado": 2071.0, "balance_elo": 22.1, "trayectoria": [{"num": 1, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 2000, "rivales_medio": 2071.0, "partidas": 12, "puntos": 7.0, "perf": 2173, "variacion": 22.1, "nuevo_elo": 2022}], "puntos_chart": [{"fecha": "2025-09-27", "torneo": "Inicio (XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete)", "elo": 2000}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 2022}]}, {"pos": 22, "id": 38, "nombre": "Alain", "apellidos": "Ledesma Gurrea", "nombre_completo": "Alain Ledesma Gurrea", "elo": 2018, "titulo": "", "variacion": 13, "num_torneos": 4, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2018, "peak_fecha": "2026-09-19", "peak_torneo": "Gurutzeko Jaiak 2026", "best_perf": 2153, "best_perf_torneo": "Gurutzeko Jaiak 2026", "total_partidas": 34, "total_puntos": 15.0, "efectividad": 44.1, "rivales_ponderado": 2073.3, "balance_elo": 16.9, "trayectoria": [{"num": 1, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 2000, "rivales_medio": 2071.0, "partidas": 6, "puntos": 2.0, "perf": 1938, "variacion": -4.0, "nuevo_elo": 1996}, {"num": 2, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 1996, "rivales_medio": 2071.0, "partidas": 12, "puntos": 4.0, "perf": 1938, "variacion": -7.2, "nuevo_elo": 1989}, {"num": 3, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 1989, "rivales_medio": 2072.0, "partidas": 9, "puntos": 5.0, "perf": 2144, "variacion": 15.6, "nuevo_elo": 2005}, {"num": 4, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 2005, "rivales_medio": 2081.0, "partidas": 7, "puntos": 4.0, "perf": 2153, "variacion": 12.5, "nuevo_elo": 2018}], "puntos_chart": [{"fecha": "2025-09-13", "torneo": "Inicio (Gurutzeko Jaiak)", "elo": 2000}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 1996}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 1989}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 2005}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 2018}]}, {"pos": 23, "id": 39, "nombre": "Aketza", "apellidos": "Pereira López", "nombre_completo": "Aketza Pereira López", "elo": 2018, "titulo": "", "variacion": 0, "num_torneos": 2, "fecha_ultimo": "2026-04-25", "dias_inactivo": 148, "peak_elo": 2018, "peak_fecha": "2026-03-21", "peak_torneo": "IV Torneo Interclubes Conteneo 2026", "best_perf": 2143, "best_perf_torneo": "IV Torneo Interclubes Conteneo 2026", "total_partidas": 26, "total_puntos": 12.5, "efectividad": 48.1, "rivales_ponderado": 2072.5, "balance_elo": 18.5, "trayectoria": [{"num": 1, "fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo_inicial": 2000, "rivales_medio": 2071.0, "partidas": 13, "puntos": 7.0, "perf": 2143, "variacion": 18.1, "nuevo_elo": 2018}, {"num": 2, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 2018, "rivales_medio": 2074.0, "partidas": 13, "puntos": 5.5, "perf": 1972, "variacion": 0.4, "nuevo_elo": 2018}], "puntos_chart": [{"fecha": "2026-03-21", "torneo": "Inicio (IV Torneo Interclubes Conteneo 2026)", "elo": 2000}, {"fecha": "2026-03-21", "torneo": "IV Torneo Interclubes Conteneo 2026", "elo": 2018}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 2018}]}, {"pos": 24, "id": 20, "nombre": "Erlantz", "apellidos": "Arroyo Rodríguez", "nombre_completo": "Erlantz Arroyo Rodríguez", "elo": 2007, "titulo": "", "variacion": 7, "num_torneos": 69, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 2007, "peak_fecha": "2026-09-19", "peak_torneo": "Gurutzeko Jaiak 2026", "best_perf": 2093, "best_perf_torneo": "Gurutzeko Jaiak 2026", "total_partidas": 7, "total_puntos": 4.0, "efectividad": 57.1, "rivales_ponderado": 2021.0, "balance_elo": 7.1, "trayectoria": [{"num": 1, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 2000, "rivales_medio": 2021.0, "partidas": 7, "puntos": 4.0, "perf": 2093, "variacion": 7.1, "nuevo_elo": 2007}], "puntos_chart": [{"fecha": "2026-09-19", "torneo": "Inicio (Gurutzeko Jaiak 2026)", "elo": 2000}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 2007}]}, {"pos": 25, "id": 24, "nombre": "Carlos", "apellidos": "Quilez Sanz", "nombre_completo": "Carlos Quilez Sanz", "elo": 2000, "titulo": "", "variacion": 0, "num_torneos": 53, "fecha_ultimo": "2024-09-01", "dias_inactivo": 749, "peak_elo": 2000, "peak_fecha": "2024-09-01", "peak_torneo": "-", "best_perf": 0, "best_perf_torneo": "-", "total_partidas": 0, "total_puntos": 0.0, "efectividad": 0.0, "rivales_ponderado": 0.0, "balance_elo": 0.0, "trayectoria": [], "puntos_chart": []}, {"pos": 26, "id": 23, "nombre": "Nicola", "apellidos": "Lococo Cobo", "nombre_completo": "Nicola Lococo Cobo", "elo": 2000, "titulo": "", "variacion": 0, "num_torneos": 1, "fecha_ultimo": "2025-09-01", "dias_inactivo": 384, "peak_elo": 2000, "peak_fecha": "2025-09-01", "peak_torneo": "-", "best_perf": 0, "best_perf_torneo": "-", "total_partidas": 0, "total_puntos": 0.0, "efectividad": 0.0, "rivales_ponderado": 0.0, "balance_elo": 0.0, "trayectoria": [], "puntos_chart": []}, {"pos": 27, "id": 27, "nombre": "June", "apellidos": "Fernández Páramo", "nombre_completo": "June Fernández Páramo", "elo": 1996, "titulo": "", "variacion": 4, "num_torneos": 2, "fecha_ultimo": "2026-09-19", "dias_inactivo": 1, "peak_elo": 1996, "peak_fecha": "2026-09-19", "peak_torneo": "Gurutzeko Jaiak 2026", "best_perf": 2009, "best_perf_torneo": "Gurutzeko Jaiak 2026", "total_partidas": 7, "total_puntos": 3.0, "efectividad": 42.9, "rivales_ponderado": 2081.0, "balance_elo": 3.8, "trayectoria": [{"num": 1, "fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo_inicial": 1992, "rivales_medio": 2081.0, "partidas": 7, "puntos": 3.0, "perf": 2009, "variacion": 3.8, "nuevo_elo": 1996}], "puntos_chart": [{"fecha": "2026-09-19", "torneo": "Inicio (Gurutzeko Jaiak 2026)", "elo": 1992}, {"fecha": "2026-09-19", "torneo": "Gurutzeko Jaiak 2026", "elo": 1996}]}, {"pos": 28, "id": 28, "nombre": "Victor Manuel", "apellidos": "Gamarra Rodríguez", "nombre_completo": "Victor Manuel Gamarra Rodríguez", "elo": 1988, "titulo": "", "variacion": 0, "num_torneos": 5, "fecha_ultimo": "2025-05-10", "dias_inactivo": 498, "peak_elo": 1988, "peak_fecha": "2025-05-10", "peak_torneo": "-", "best_perf": 0, "best_perf_torneo": "-", "total_partidas": 0, "total_puntos": 0.0, "efectividad": 0.0, "rivales_ponderado": 0.0, "balance_elo": 0.0, "trayectoria": [], "puntos_chart": []}, {"pos": 29, "id": 30, "nombre": "José Ignacio", "apellidos": "Setién Gómez", "nombre_completo": "José Ignacio Setién Gómez", "elo": 1972, "titulo": "", "variacion": 0, "num_torneos": 6, "fecha_ultimo": "2025-07-19", "dias_inactivo": 428, "peak_elo": 1972, "peak_fecha": "2025-07-19", "peak_torneo": "-", "best_perf": 0, "best_perf_torneo": "-", "total_partidas": 0, "total_puntos": 0.0, "efectividad": 0.0, "rivales_ponderado": 0.0, "balance_elo": 0.0, "trayectoria": [], "puntos_chart": []}, {"pos": 30, "id": 32, "nombre": "Markel", "apellidos": "Fernández Páramo", "nombre_completo": "Markel Fernández Páramo", "elo": 1963, "titulo": "", "variacion": 0, "num_torneos": 2, "fecha_ultimo": "2025-09-13", "dias_inactivo": 372, "peak_elo": 1963, "peak_fecha": "2025-09-13", "peak_torneo": "Gurutzeko Jaiak", "best_perf": 2071, "best_perf_torneo": "Gurutzeko Jaiak", "total_partidas": 6, "total_puntos": 3.0, "efectividad": 50.0, "rivales_ponderado": 2071.0, "balance_elo": 9.8, "trayectoria": [{"num": 1, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 1953, "rivales_medio": 2071.0, "partidas": 6, "puntos": 3.0, "perf": 2071, "variacion": 9.8, "nuevo_elo": 1963}], "puntos_chart": [{"fecha": "2025-09-13", "torneo": "Inicio (Gurutzeko Jaiak)", "elo": 1953}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 1963}]}, {"pos": 31, "id": 29, "nombre": "Juan José", "apellidos": "Fernández Fernández", "nombre_completo": "Juan José Fernández Fernández", "elo": 1959, "titulo": "", "variacion": 0, "num_torneos": 5, "fecha_ultimo": "2026-01-02", "dias_inactivo": 261, "peak_elo": 1983, "peak_fecha": "2026-01-02", "peak_torneo": "Torneo social de enero", "best_perf": 1722, "best_perf_torneo": "Torneo social de enero", "total_partidas": 9, "total_puntos": 1.0, "efectividad": 11.1, "rivales_ponderado": 2072.0, "balance_elo": -23.7, "trayectoria": [{"num": 1, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 1983, "rivales_medio": 2072.0, "partidas": 9, "puntos": 1.0, "perf": 1722, "variacion": -23.7, "nuevo_elo": 1959}], "puntos_chart": [{"fecha": "2026-01-02", "torneo": "Inicio (Torneo social de enero)", "elo": 1983}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 1959}]}, {"pos": 32, "id": 36, "nombre": "Uxue", "apellidos": "Fernández Páramo", "nombre_completo": "Uxue Fernández Páramo", "elo": 1932, "titulo": "", "variacion": 0, "num_torneos": 19, "fecha_ultimo": "2026-04-25", "dias_inactivo": 148, "peak_elo": 1933, "peak_fecha": "2025-09-27", "peak_torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "best_perf": 2071, "best_perf_torneo": "Gurutzeko Jaiak", "total_partidas": 47, "total_puntos": 16.0, "efectividad": 34.0, "rivales_ponderado": 2072.6, "balance_elo": 22.2, "trayectoria": [{"num": 1, "fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo_inicial": 1910, "rivales_medio": 2071.0, "partidas": 6, "puntos": 3.0, "perf": 2071, "variacion": 13.0, "nuevo_elo": 1923}, {"num": 2, "fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo_inicial": 1923, "rivales_medio": 2071.0, "partidas": 10, "puntos": 4.0, "perf": 1969, "variacion": 10.1, "nuevo_elo": 1933}, {"num": 3, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 1933, "rivales_medio": 2072.0, "partidas": 9, "puntos": 0.0, "perf": 1272, "variacion": -27.9, "nuevo_elo": 1905}, {"num": 4, "fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo_inicial": 1905, "rivales_medio": 2074.0, "partidas": 11, "puntos": 5.0, "perf": 2002, "variacion": 19.8, "nuevo_elo": 1925}, {"num": 5, "fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo_inicial": 1925, "rivales_medio": 2074.0, "partidas": 11, "puntos": 4.0, "perf": 1941, "variacion": 7.2, "nuevo_elo": 1932}], "puntos_chart": [{"fecha": "2025-09-13", "torneo": "Inicio (Gurutzeko Jaiak)", "elo": 1910}, {"fecha": "2025-09-13", "torneo": "Gurutzeko Jaiak", "elo": 1923}, {"fecha": "2025-09-27", "torneo": "XXXIX Portugaleteko Uri Urena - Noble Villa de Portugalete", "elo": 1933}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 1905}, {"fecha": "2026-04-18", "torneo": "Campeonato de Bizkaia de Rápidas Individual", "elo": 1925}, {"fecha": "2026-04-25", "torneo": "Campeonato de Bizkaia de Rápidas por equipos", "elo": 1932}]}, {"pos": 33, "id": 34, "nombre": "Ibai", "apellidos": "Ciprián Merlo", "nombre_completo": "Ibai Ciprián Merlo", "elo": 1932, "titulo": "", "variacion": 0, "num_torneos": 10, "fecha_ultimo": "2026-01-02", "dias_inactivo": 261, "peak_elo": 1932, "peak_fecha": "2026-01-02", "peak_torneo": "Torneo social de enero", "best_perf": 2000, "best_perf_torneo": "Torneo social de enero", "total_partidas": 9, "total_puntos": 4.0, "efectividad": 44.4, "rivales_ponderado": 2072.0, "balance_elo": 13.7, "trayectoria": [{"num": 1, "fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo_inicial": 1918, "rivales_medio": 2072.0, "partidas": 9, "puntos": 4.0, "perf": 2000, "variacion": 13.7, "nuevo_elo": 1932}], "puntos_chart": [{"fecha": "2026-01-02", "torneo": "Inicio (Torneo social de enero)", "elo": 1918}, {"fecha": "2026-01-02", "torneo": "Torneo social de enero", "elo": 1932}]}, {"pos": 34, "id": 33, "nombre": "Ander", "apellidos": "Rojo", "nombre_completo": "Ander Rojo", "elo": 1927, "titulo": "", "variacion": 0, "num_torneos": 2, "fecha_ultimo": "2025-05-10", "dias_inactivo": 498, "peak_elo": 1927, "peak_fecha": "2025-05-10", "peak_torneo": "-", "best_perf": 0, "best_perf_torneo": "-", "total_partidas": 0, "total_puntos": 0.0, "efectividad": 0.0, "rivales_ponderado": 0.0, "balance_elo": 0.0, "trayectoria": [], "puntos_chart": []}, {"pos": 35, "id": 35, "nombre": "Ibai", "apellidos": "Mellado Casares", "nombre_completo": "Ibai Mellado Casares", "elo": 1911, "titulo": "", "variacion": 0, "num_torneos": 4, "fecha_ultimo": "2024-04-05", "dias_inactivo": 898, "peak_elo": 1911, "peak_fecha": "2024-04-05", "peak_torneo": "-", "best_perf": 0, "best_perf_torneo": "-", "total_partidas": 0, "total_puntos": 0.0, "efectividad": 0.0, "rivales_ponderado": 0.0, "balance_elo": 0.0, "trayectoria": [], "puntos_chart": []}], "torneos_ciclo": [{"id": 26, "nombre": "Amistad Laudio", "fecha": "2026-09-05", "participantes": 4}, {"id": 28, "nombre": "Gurutzeko Jaiak 2026", "fecha": "2026-09-19", "participantes": 8}], "historial_listas": [{"id": 15, "fecha": "2026-09-05 13:17:02", "total_socios": 36, "top3": ["Rikardo Pérez Pacheco (2335)", "Aritz Zabala Pérez (2326)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 14, "fecha": "2026-07-11 16:17:23", "total_socios": 37, "top3": ["Rikardo Pérez Pacheco (2335)", "Aritz Zabala Pérez (2326)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 13, "fecha": "2026-06-07 21:07:29", "total_socios": 38, "top3": ["Rikardo Pérez Pacheco (2339)", "Aritz Zabala Pérez (2326)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 11, "fecha": "2026-05-09 12:58:30", "total_socios": 38, "top3": ["Aritz Zabala Pérez (2326)", "Rikardo Pérez Pacheco (2304)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 10, "fecha": "2026-05-08 07:27:31", "total_socios": 38, "top3": ["Aritz Zabala Pérez (2326)", "Rikardo Pérez Pacheco (2304)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 9, "fecha": "2026-04-26 19:21:25", "total_socios": 38, "top3": ["Aritz Zabala Pérez (2332)", "Rikardo Pérez Pacheco (2313)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 8, "fecha": "2026-04-02 17:36:52", "total_socios": 39, "top3": ["Aritz Zabala Pérez (2332)", "Rikardo Pérez Pacheco (2313)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 7, "fecha": "2026-03-18 10:54:26", "total_socios": 38, "top3": ["Aritz Zabala Pérez (2332)", "Rikardo Pérez Pacheco (2313)", "Xabier Barbazan Bilbao (2302)"]}, {"id": 6, "fecha": "2025-09-29 20:12:44", "total_socios": 38, "top3": ["Rikardo Pérez Pacheco (2313)", "Aritz Zabala Pérez (2312)", "Asier González Pereira (2309)"]}, {"id": 5, "fecha": "2025-09-17 12:35:14", "total_socios": 38, "top3": ["Rikardo Pérez Pacheco (2336)", "Xabier Barbazan Bilbao (2318)", "Asier González Pereira (2303)"]}]}
     </script>
 
     <!-- LÓGICA INTERACTIVA CLIENTE -->
@@ -866,6 +1154,8 @@
         let currentFilter = "todos";
         let sortKey = "pos";
         let sortAsc = true;
+        let tooltipTimer = null;
+        let toastTimer = null;
 
         function escapeHtml(str) {
             if (str === null || str === undefined) return '';
@@ -875,6 +1165,16 @@
                 .replace(/>/g, "&gt;")
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById("toast");
+            toast.textContent = msg;
+            toast.classList.add("show");
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove("show");
+            }, 3200);
         }
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -889,9 +1189,12 @@
             document.getElementById("view-torneos").style.display = tab === 'torneos' ? 'block' : 'none';
             document.getElementById("view-historial").style.display = tab === 'historial' ? 'block' : 'none';
 
-            if (tab === 'ranking') event.target.classList.add("active");
-            if (tab === 'torneos') event.target.classList.add("active");
-            if (tab === 'historial') event.target.classList.add("active");
+            const activeBtn = Array.from(document.querySelectorAll(".tab-btn")).find(b => 
+                (tab === 'ranking' && b.textContent.includes('Ranking')) ||
+                (tab === 'torneos' && b.textContent.includes('Torneos')) ||
+                (tab === 'historial' && b.textContent.includes('Historial'))
+            );
+            if (activeBtn) activeBtn.classList.add("active");
         }
 
         function setFiltro(tipo) {
@@ -943,7 +1246,6 @@
                 return true;
             });
 
-            // Ordenación
             filtrados.sort((a, b) => {
                 let valA = a[sortKey];
                 let valB = b[sortKey];
@@ -988,14 +1290,19 @@
                     <tr class="player-row" onclick="abrirFicha(${j.id})">
                         <td style="text-align: center;"><span class="pos-badge ${posClass}">${j.pos}</span></td>
                         <td>
-                            ${tituloTag}<span class="player-name">${escapeHtml(j.apellidos)}, ${escapeHtml(j.nombre)}</span>
+                            <div>${tituloTag}<span class="player-name">${escapeHtml(j.apellidos)}, ${escapeHtml(j.nombre)}</span></div>
+                            <div class="player-meta-mobile mobile-only">
+                                ${statusTag}
+                                <span>• ${j.num_torneos} torn.</span>
+                                <span>• Últ: ${j.fecha_ultimo}</span>
+                            </div>
                         </td>
                         <td style="text-align: center;"><span class="elo-cell">${j.elo}</span></td>
                         <td style="text-align: center;"><span class="var-badge ${varClass}">${varSign}</span></td>
-                        <td style="text-align: center; color: #4a5568; font-weight: 500;">${j.num_torneos}</td>
-                        <td style="color: #718096; font-size: 0.88rem;">${j.fecha_ultimo}</td>
-                        <td style="text-align: center;">${statusTag}</td>
-                        <td style="text-align: center;">
+                        <td class="desktop-only" style="text-align: center; color: #4a5568; font-weight: 500;">${j.num_torneos}</td>
+                        <td class="desktop-only" style="color: #718096; font-size: 0.88rem;">${j.fecha_ultimo}</td>
+                        <td class="desktop-only" style="text-align: center;">${statusTag}</td>
+                        <td class="desktop-only" style="text-align: center;">
                             <button class="btn-view-ficha" onclick="event.stopPropagation(); abrirFicha(${j.id})">Ver Ficha</button>
                         </td>
                     </tr>
@@ -1098,6 +1405,7 @@
             const modal = document.getElementById("modal-ficha");
             modal.classList.remove("open");
             document.body.style.overflow = "";
+            ocultarTooltip();
         }
 
         document.addEventListener("keydown", (e) => {
@@ -1108,6 +1416,7 @@
             const svg = document.getElementById("chart-svg");
             const tooltip = document.getElementById("chart-tooltip");
             svg.innerHTML = "";
+            ocultarTooltip();
 
             if (!puntos || puntos.length <= 1) {
                 svg.innerHTML = `<text x="400" y="110" text-anchor="middle" fill="#a0aec0" font-size="14">No hay suficientes torneos registrados para trazar la gráfica evolutiva</text>`;
@@ -1119,8 +1428,8 @@
             const maxElo = Math.max(...elos) + 30;
             const rangeElo = maxElo - minElo || 1;
 
-            const paddingLeft = 60;
-            const paddingRight = 40;
+            const paddingLeft = 55;
+            const paddingRight = 35;
             const paddingTop = 25;
             const paddingBottom = 35;
             const width = 800;
@@ -1129,7 +1438,7 @@
             const plotW = width - paddingLeft - paddingRight;
             const plotH = height - paddingTop - paddingBottom;
 
-            // Grid lines (3 horizontal lines)
+            // Líneas de referencia horizontal
             let gridHtml = "";
             for (let i = 0; i <= 3; i++) {
                 const yVal = minElo + (rangeElo / 3) * i;
@@ -1147,24 +1456,24 @@
             });
 
             const polylinePoints = coords.map(c => `${c.x.toFixed(1)},${c.y.toFixed(1)}`).join(" ");
-
-            // Fill area under line
             const areaPoints = `${paddingLeft},${paddingTop + plotH} ` + polylinePoints + ` ${width - paddingRight},${paddingTop + plotH}`;
 
             const gradientDef = `
                 <defs>
                     <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="#1b3a57" stop-opacity="0.3" />
+                        <stop offset="0%" stop-color="#1b3a57" stop-opacity="0.25" />
                         <stop offset="100%" stop-color="#1b3a57" stop-opacity="0.0" />
                     </linearGradient>
                 </defs>
             `;
 
             let dotsHtml = coords.map((c, i) => `
-                <circle cx="${c.x}" cy="${c.y}" r="5" fill="#d4af37" stroke="#1b3a57" stroke-width="2.5" 
-                        style="cursor: pointer; transition: transform 0.15s;"
-                        onmouseover="mostrarTooltip(event, '${c.data.torneo}', '${c.data.fecha}', ${c.data.elo})"
-                        onmouseout="ocultarTooltip()" />
+                <circle cx="${c.x}" cy="${c.y}" r="6" fill="#d4af37" stroke="#1b3a57" stroke-width="2.5" 
+                        style="cursor: pointer; transition: transform 0.15s; touch-action: manipulation;"
+                        onmouseover="mostrarTooltip(event, '${escapeHtml(c.data.torneo)}', '${escapeHtml(c.data.fecha)}', ${c.data.elo})"
+                        onmouseout="ocultarTooltip()"
+                        onclick="mostrarTooltip(event, '${escapeHtml(c.data.torneo)}', '${escapeHtml(c.data.fecha)}', ${c.data.elo})"
+                        ontouchstart="mostrarTooltip(event, '${escapeHtml(c.data.torneo)}', '${escapeHtml(c.data.fecha)}', ${c.data.elo})" />
             `).join("");
 
             svg.innerHTML = `
@@ -1177,22 +1486,40 @@
         }
 
         function mostrarTooltip(e, torneo, fecha, elo) {
+            if (e) e.stopPropagation();
             const tooltip = document.getElementById("chart-tooltip");
-            const box = document.getElementById("chart-container").getBoundingClientRect();
-            const x = e.clientX - box.left;
-            const y = e.clientY - box.top;
+            const container = document.getElementById("chart-container");
+            const box = container.getBoundingClientRect();
+
+            let clientX = e.clientX;
+            let clientY = e.clientY;
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            }
+
+            let x = clientX - box.left;
+            let y = clientY - box.top;
+
+            // Delimitar dentro de los bordes del gráfico para no salirse en móviles
+            x = Math.max(70, Math.min(box.width - 70, x));
+            y = Math.max(30, y);
 
             tooltip.style.left = `${x}px`;
             tooltip.style.top = `${y}px`;
-            tooltip.innerHTML = `<strong>${elo} pts</strong><br><span style="color:#d4af37">${escapeHtml(torneo)}</span><br><small style="color:#a0aec0">${escapeHtml(fecha)}</small>`;
+            tooltip.innerHTML = `<strong>${elo} pts</strong><br><span style="color:#d4af37">${torneo}</span><br><small style="color:#a0aec0">${fecha}</small>`;
             tooltip.style.display = "block";
+
+            clearTimeout(tooltipTimer);
+            tooltipTimer = setTimeout(ocultarTooltip, 4000);
         }
 
         function ocultarTooltip() {
-            document.getElementById("chart-tooltip").style.display = "none";
+            const tooltip = document.getElementById("chart-tooltip");
+            if (tooltip) tooltip.style.display = "none";
         }
 
-        /* Generador de texto para WhatsApp */
+        /* Generador y Compartición de Resumen para WhatsApp / Redes */
         function copiarWhatsApp() {
             let txt = `*PORTUGALETEKO XAKE TALDEA*\n`;
             txt += `*CLASIFICACIÓN ELO RÁPIDAS FIDE (K=10)*\n`;
@@ -1215,11 +1542,49 @@
                 });
             }
 
-            navigator.clipboard.writeText(txt).then(() => {
-                alert("¡Ranking copiado al portapapeles con formato accesible para WhatsApp! Ya puedes pegarlo con Ctrl+V.");
-            }).catch(err => {
-                prompt("Copia manualmente el texto para WhatsApp:", txt);
-            });
+            // Uso de Web Share API nativa en móviles si está disponible
+            if (navigator.share) {
+                navigator.share({
+                    title: "Portugaleteko Xake Taldea - ELO Rápidas",
+                    text: txt
+                }).then(() => {
+                    showToast("¡Resumen compartido con éxito!");
+                }).catch(err => {
+                    // Si el usuario cancela o falla, copiar al portapapeles
+                    copiarAlPortapapeles(txt);
+                });
+            } else {
+                copiarAlPortapapeles(txt);
+            }
+        }
+
+        function copiarAlPortapapeles(txt) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(txt).then(() => {
+                    showToast("📋 ¡Ranking copiado al portapapeles! Listo para pegar en WhatsApp.");
+                }).catch(() => {
+                    fallbackCopy(txt);
+                });
+            } else {
+                fallbackCopy(txt);
+            }
+        }
+
+        function fallbackCopy(txt) {
+            const textArea = document.createElement("textarea");
+            textArea.value = txt;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast("📋 ¡Ranking copiado al portapapeles!");
+            } catch (err) {
+                prompt("Copia el siguiente texto para WhatsApp:", txt);
+            }
+            document.body.removeChild(textArea);
         }
     </script>
 </body>
