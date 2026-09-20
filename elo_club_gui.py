@@ -1740,14 +1740,14 @@ ESTADÍSTICAS GLOBALES:
     def _mostrar_dialogo_exito_publicacion(self, url: str):
         success_dlg = ctk.CTkToplevel(self)
         success_dlg.title("¡Web Publicada con Éxito!")
-        success_dlg.geometry("540x290")
+        success_dlg.geometry("560x330")
         success_dlg.resizable(False, False)
         success_dlg.transient(self)
         success_dlg.grab_set()
 
         success_dlg.update_idletasks()
-        x = self.winfo_x() + (self.winfo_width() // 2) - 270
-        y = self.winfo_y() + (self.winfo_height() // 2) - 145
+        x = self.winfo_x() + (self.winfo_width() // 2) - 280
+        y = self.winfo_y() + (self.winfo_height() // 2) - 165
         success_dlg.geometry(f"+{max(0, x)}+{max(0, y)}")
 
         ctk.CTkLabel(
@@ -1755,19 +1755,19 @@ ESTADÍSTICAS GLOBALES:
             text="🎉  ¡Portal Web Publicado con Éxito!", 
             font=ctk.CTkFont(family="Segoe UI", size=17, weight="bold"),
             text_color="#2ecc71"
-        ).pack(pady=(22, 8))
+        ).pack(pady=(20, 6))
 
         ctk.CTkLabel(
             success_dlg,
-            text="Los cambios han sido enviados a GitHub. El portal web oficial del club\nse actualizará en GitHub Pages en los próximos instantes.",
+            text="Los archivos han sido subidos correctamente a GitHub (rama main).\nGitHub Pages tardará de 30 a 60 segundos en actualizar el sitio online.",
             font=ctk.CTkFont(size=12),
-            wraplength=480,
+            wraplength=500,
             justify="center"
-        ).pack(pady=(0, 14), padx=20)
+        ).pack(pady=(0, 10), padx=20)
 
         # Caja con la URL
         url_frame = ctk.CTkFrame(success_dlg, corner_radius=8, fg_color="#1a252f")
-        url_frame.pack(fill="x", padx=30, pady=(0, 18))
+        url_frame.pack(fill="x", padx=30, pady=(0, 8))
         
         lbl_url = ctk.CTkLabel(
             url_frame, 
@@ -1776,6 +1776,15 @@ ESTADÍSTICAS GLOBALES:
             text_color="#3498db"
         )
         lbl_url.pack(pady=8, padx=12)
+
+        ctk.CTkLabel(
+            success_dlg,
+            text="💡 Nota: Si es la primera vez y sale error 404, asegúrate de activar Pages en:\nGitHub > Repositorio > Settings > Pages (Source: Deploy from a branch 'main').",
+            font=ctk.CTkFont(size=11),
+            text_color="#95a5a6",
+            wraplength=500,
+            justify="center"
+        ).pack(pady=(0, 12), padx=20)
 
         btn_box = ctk.CTkFrame(success_dlg, fg_color="transparent")
         btn_box.pack(pady=(0, 15))
