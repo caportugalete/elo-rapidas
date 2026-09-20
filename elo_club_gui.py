@@ -431,6 +431,9 @@ class ELOClubGUI(ctk.CTk):
                 tag = "var_pos"
             elif j['variacion'] < 0:
                 tag = "var_neg"
+            inact_str = "Sin torneos" if j["inactividad"] >= 9999 else f"{j['inactividad']} d"
+            if j['inactividad'] >= 9999:
+                pass  # sin torneos se mantiene con estilo normal
             elif j['inactividad'] > 365:
                 tag = "inactivo_grave"
             elif j['inactividad'] > 180:
@@ -438,7 +441,7 @@ class ELOClubGUI(ctk.CTk):
 
             self.tree_ranking.insert("", "end", values=(
                 j["pos"], j["id"], j["nombre_completo"], j["elo"], j["titulo"],
-                var_str, j["torneos"], j["ultimo_torneo"], j["inactividad"]
+                var_str, j["torneos"], j["ultimo_torneo"], inact_str
             ), tags=(tag,))
 
     def _sort_ranking(self, col: str):
@@ -1532,10 +1535,11 @@ ESTADÍSTICAS GLOBALES:
 
         with self.get_connection() as conn:
             cursor = conn.cursor()
-            jugadores = cursor.execute(
-                'SELECT id, nombre, apellidos, elo FROM jugadores WHERE elo > 2000 AND fecha_ultimo_torneo < ?', 
-                (fecha_limite,)
-            ).fetchall()
+            jugadores = cursor.execute('''
+                SELECT id, nombre, apellidos, elo 
+                FROM jugadores 
+                WHERE elo > 2000 AND (fecha_ultimo_torneo < ? OR (fecha_ultimo_torneo IS NULL AND SUBSTR(fecha_creacion, 1, 10) < ?))
+            ''', (fecha_limite, fecha_limite)).fetchall()
 
         if not jugadores:
             messagebox.showinfo("Regulación Anual", "No hay jugadores que cumplan los requisitos de inactividad (>365 días y ELO > 2000).")

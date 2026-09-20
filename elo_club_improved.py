@@ -33,9 +33,10 @@ class ELOClub:
         self.init_database()
     
     def get_connection(self):
-        """Devuelve una conexión a la base de datos con claves foráneas activadas."""
-        conn = sqlite3.connect(self.db_name)
+        """Devuelve una conexión a la base de datos con claves foráneas y timeout configurados."""
+        conn = sqlite3.connect(self.db_name, timeout=10.0)
         conn.execute("PRAGMA foreign_keys = ON;")
+        conn.execute("PRAGMA busy_timeout = 5000;")
         return conn
 
     def utc_to_local_str(self, utc_date_str: str) -> str:
@@ -96,12 +97,12 @@ class ELOClub:
         return int(elo_rivales_medio + delta_lookup[closest_key])
 
     def calcular_dias_desde_ultimo_torneo(self, fecha_ultimo_torneo: str) -> int:
-        if not fecha_ultimo_torneo: return 0
+        if not fecha_ultimo_torneo: return 9999
         try:
             fecha_ultimo = datetime.strptime(fecha_ultimo_torneo, "%Y-%m-%d")
             return (datetime.now() - fecha_ultimo).days
         except ValueError:
-            return 0
+            return 9999
     
     def calculo_Pd(self, elo_jugador: float, elo_rival_medio: float) -> float:
         return 1 / (1 + 10 ** ((elo_rival_medio - elo_jugador) / 400))
@@ -474,17 +475,36 @@ class ELOClub:
             jugadores = cursor.execute('SELECT nombre, apellidos, elo, titulo, variacion_ultima_lista, num_torneos, fecha_ultimo_torneo FROM jugadores ORDER BY elo DESC, num_torneos DESC').fetchall()
         
         nombre_archivo = f"lista_elo_blitz_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv"
+        def safe_csv(val):
+            if val is None: return ""
+            s = str(val)
+            if s and s[0] in ('=', '+', '-', '@', '\t', '\r'):
+                return f"'{s}"
+            return s
+
         try:
             with open(nombre_archivo, 'w', newline='', encoding='utf-8-sig') as f:
                 writer = csv.writer(f, delimiter=';')
                 writer.writerow(['RANKING', 'NOMBRE', 'APELLIDOS', 'ELO', 'TÍTULO', 'VARIACIÓN', 'TORNEOS', 'ÚLTIMO_TORNEO', 'DÍAS_INACTIVO'])
                 for i, (nombre, apellidos, elo, titulo, var_lista, num_torn, fecha_ult) in enumerate(jugadores, 1):
-                    writer.writerow([i, nombre, apellidos, elo, titulo, f"{var_lista:+d}", num_torn, fecha_ult or "Nunca", self.calcular_dias_desde_ultimo_torneo(fecha_ult)])
+                    dias = self.calcular_dias_desde_ultimo_torneo(fecha_ult)
+                    dias_txt = "Sin torneos" if dias == 9999 else str(dias)
+                    writer.writerow([
+                        i, 
+                        safe_csv(nombre), 
+                        safe_csv(apellidos), 
+                        elo, 
+                        safe_csv(titulo), 
+                        f"{var_lista:+d}", 
+                        num_torn, 
+                        fecha_ult or "Nunca", 
+                        dias_txt
+                    ])
                 writer.writerow([])
                 writer.writerow(['TORNEOS COMPUTADOS EN ESTA LISTA'])
                 if torneos_computados:
                     for nombre, fecha in torneos_computados:
-                        writer.writerow([f"({fecha})", nombre])
+                        writer.writerow([f"({fecha})", safe_csv(nombre)])
                 else:
                     writer.writerow(["Ninguno"])
             print(f"\n{Colors.GREEN}✓ Lista exportada a: {nombre_archivo}{Colors.RESET}")
@@ -582,6 +602,7 @@ class ELOClub:
         
         img_tag = f'<img src="{escudo_b64}" alt="Escudo Portugaleteko Xake Taldea" class="escudo-img">' if escudo_b64 else '<div class="escudo-placeholder">♟️</div>'
 
+        import html
         filas_jugadores = ""
         for i, (j_id, nombre, apellidos, elo, titulo, var_lista, num_torn, fecha_ult) in enumerate(jugadores, 1):
             dias_inactivo = self.calcular_dias_desde_ultimo_torneo(fecha_ult)
@@ -606,12 +627,16 @@ class ELOClub:
             elif i == 2: medalla = " 🥈"
             elif i == 3: medalla = " 🥉"
 
+            s_nom = html.escape(str(nombre))
+            s_ape = html.escape(str(apellidos))
+            s_tit = html.escape(str(titulo)) if titulo else '-'
+
             filas_jugadores += f"""
             <tr>
                 <td class="col-rk"><b>{i}</b>{medalla}</td>
-                <td class="col-nombre"><b>{nombre} {apellidos}</b></td>
+                <td class="col-nombre"><b>{s_nom} {s_ape}</b></td>
                 <td class="col-elo"><b>{elo}</b></td>
-                <td class="col-titulo">{titulo or '-'}</td>
+                <td class="col-titulo">{s_tit}</td>
                 <td class="col-var">{badge_var}</td>
                 <td class="col-torn">{num_torn}</td>
                 <td class="col-fecha">{fecha_ult or 'Nunca'}</td>
@@ -621,7 +646,8 @@ class ELOClub:
         filas_torneos = ""
         if torneos_computados:
             for t_nom, t_fec in torneos_computados:
-                filas_torneos += f"<tr><td class='col-t-fec'>{t_fec}</td><td class='col-t-nom'>{t_nom}</td></tr>"
+                s_tnom = html.escape(str(t_nom))
+                filas_torneos += f"<tr><td class='col-t-fec'>{t_fec}</td><td class='col-t-nom'>{s_tnom}</td></tr>"
         else:
             filas_torneos = "<tr><td colspan='2' class='text-muted' style='text-align:center;'>No se han registrado nuevos torneos en este ciclo.</td></tr>"
 
@@ -1151,13 +1177,13 @@ class ELOClub:
         # 6. Push a GitHub
         log("Publicando en GitHub Pages (git push origin main)...")
         try:
-            push_res = subprocess.run(["git", "push", "-u", "origin", "main"], capture_output=True, text=True)
+            push_res = subprocess.run(["git", "push", "-u", "origin", "main"], capture_output=True, text=True, timeout=90)
             if push_res.returncode != 0:
                 # Si falló la rama main, intentar rama actual
-                branch_res = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True)
+                branch_res = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, timeout=15)
                 curr_branch = branch_res.stdout.strip() or "main"
                 if curr_branch != "main":
-                    push_res = subprocess.run(["git", "push", "-u", "origin", curr_branch], capture_output=True, text=True)
+                    push_res = subprocess.run(["git", "push", "-u", "origin", curr_branch], capture_output=True, text=True, timeout=90)
 
                 if push_res.returncode != 0:
                     err = (push_res.stderr or push_res.stdout).strip()
@@ -1166,6 +1192,8 @@ class ELOClub:
                         "Comprueba que tu cuenta de GitHub tenga permisos en el repositorio "
                         "o que Git tenga configuradas tus credenciales de acceso."
                     )
+        except subprocess.TimeoutExpired:
+            return False, "La operación de subida ('git push') excedió el tiempo límite de espera (90s). Comprueba tu conexión a Internet o credenciales."
         except Exception as e:
             return False, f"Excepción durante 'git push': {e}"
 
@@ -1236,14 +1264,18 @@ class ELOClub:
         fecha_limite = (datetime.now() - timedelta(days=DIAS_MAX)).strftime("%Y-%m-%d")
         with self.get_connection() as conn:
             cursor = conn.cursor()
-            jugadores = cursor.execute('SELECT id, nombre, apellidos, fecha_ultimo_torneo FROM jugadores WHERE fecha_ultimo_torneo < ?', (fecha_limite,)).fetchall()
+            jugadores = cursor.execute('''
+                SELECT id, nombre, apellidos, fecha_ultimo_torneo 
+                FROM jugadores 
+                WHERE (fecha_ultimo_torneo < ? OR (fecha_ultimo_torneo IS NULL AND SUBSTR(fecha_creacion, 1, 10) < ?))
+            ''', (fecha_limite, fecha_limite)).fetchall()
             if not jugadores:
                 print(f"\n{Colors.GREEN}No se encontraron jugadores con más de {DIAS_MAX} días de inactividad.{Colors.RESET}")
                 return
             
             print(f"\n{Colors.RED}Los siguientes jugadores serán ELIMINADOS por inactividad:{Colors.RESET}")
             for id_j, nombre, apellidos, fecha in jugadores:
-                print(f"  - ID: {id_j}, {nombre} {apellidos} (Últ. torneo: {fecha})")
+                print(f"  - ID: {id_j}, {nombre} {apellidos} (Últ. torneo: {fecha or 'Nunca'})")
             
             confirmacion = input(f"\n{Colors.RED}Esta acción es IRREVERSIBLE. Escribe 'eliminar' para confirmar: {Colors.RESET}")
             if confirmacion.lower() == 'eliminar':
@@ -1262,7 +1294,11 @@ class ELOClub:
         fecha_limite = (hoy - timedelta(days=365)).strftime("%Y-%m-%d")
         with self.get_connection() as conn:
             cursor = conn.cursor()
-            jugadores = cursor.execute('SELECT id, nombre, apellidos, elo FROM jugadores WHERE elo > 2000 AND fecha_ultimo_torneo < ?', (fecha_limite,)).fetchall()
+            jugadores = cursor.execute('''
+                SELECT id, nombre, apellidos, elo 
+                FROM jugadores 
+                WHERE elo > 2000 AND (fecha_ultimo_torneo < ? OR (fecha_ultimo_torneo IS NULL AND SUBSTR(fecha_creacion, 1, 10) < ?))
+            ''', (fecha_limite, fecha_limite)).fetchall()
             if not jugadores:
                 print(f"\n{Colors.GREEN}No hay jugadores que cumplan los requisitos para la regulación.{Colors.RESET}")
                 return

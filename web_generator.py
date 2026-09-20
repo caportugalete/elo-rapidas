@@ -222,7 +222,7 @@ def generar_html_web_interactiva(db_name: str = "elo_club.db", ruta_destino: str
         "historial_listas": historial_listas_data
     }
 
-    json_data = json.dumps(payload, ensure_ascii=False)
+    json_data = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
 
     img_tag = f'<img src="{escudo_b64}" alt="Escudo Oficial Portugaleteko Xake Taldea" class="escudo-img">' if escudo_b64 else '<div class="escudo-fallback">♟️</div>'
 
@@ -1095,6 +1095,16 @@ def generar_html_web_interactiva(db_name: str = "elo_club.db", ruta_destino: str
         let sortKey = "pos";
         let sortAsc = true;
 
+        function escapeHtml(str) {{
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }}
+
         document.addEventListener("DOMContentLoaded", () => {{
             renderRanking();
             renderTorneos();
@@ -1192,7 +1202,7 @@ def generar_html_web_interactiva(db_name: str = "elo_club.db", ruta_destino: str
 
             tbody.innerHTML = filtrados.map(j => {{
                 const posClass = j.pos === 1 ? 'pos-1' : j.pos === 2 ? 'pos-2' : j.pos === 3 ? 'pos-3' : '';
-                const tituloTag = j.titulo ? `<span class="player-title">${{j.titulo}}</span>` : '';
+                const tituloTag = j.titulo ? `<span class="player-title">${{escapeHtml(j.titulo)}}</span>` : '';
                 
                 const varSign = j.variacion > 0 ? `+${{j.variacion}}` : (j.variacion < 0 ? `${{j.variacion}}` : `=`);
                 const varClass = j.variacion > 0 ? 'var-pos' : (j.variacion < 0 ? 'var-neg' : 'var-zero');
@@ -1206,7 +1216,7 @@ def generar_html_web_interactiva(db_name: str = "elo_club.db", ruta_destino: str
                     <tr class="player-row" onclick="abrirFicha(${{j.id}})">
                         <td style="text-align: center;"><span class="pos-badge ${{posClass}}">${{j.pos}}</span></td>
                         <td>
-                            ${{tituloTag}}<span class="player-name">${{j.apellidos}}, ${{j.nombre}}</span>
+                            ${{tituloTag}}<span class="player-name">${{escapeHtml(j.apellidos)}}, ${{escapeHtml(j.nombre)}}</span>
                         </td>
                         <td style="text-align: center;"><span class="elo-cell">${{j.elo}}</span></td>
                         <td style="text-align: center;"><span class="var-badge ${{varClass}}">${{varSign}}</span></td>
@@ -1230,8 +1240,8 @@ def generar_html_web_interactiva(db_name: str = "elo_club.db", ruta_destino: str
             tbody.innerHTML = CLUB_DATA.torneos_ciclo.map((t, idx) => `
                 <tr>
                     <td style="text-align: center; font-weight: bold; color: var(--text-muted);">${{idx + 1}}</td>
-                    <td style="font-weight: 600; color: var(--primary);">${{t.fecha}}</td>
-                    <td><strong>${{t.nombre}}</strong></td>
+                    <td style="font-weight: 600; color: var(--primary);">${{escapeHtml(t.fecha)}}</td>
+                    <td><strong>${{escapeHtml(t.nombre)}}</strong></td>
                     <td style="text-align: center;"><span class="pos-badge">${{t.participantes}}</span></td>
                 </tr>
             `).join("");
@@ -1246,9 +1256,9 @@ def generar_html_web_interactiva(db_name: str = "elo_club.db", ruta_destino: str
             tbody.innerHTML = CLUB_DATA.historial_listas.map(l => `
                 <tr>
                     <td style="text-align: center; font-weight: bold; color: var(--primary);">#${{l.id}}</td>
-                    <td style="font-weight: 600;">${{l.fecha}}</td>
+                    <td style="font-weight: 600;">${{escapeHtml(l.fecha)}}</td>
                     <td style="text-align: center;"><span class="pos-badge">${{l.total_socios}}</span></td>
-                    <td style="font-size: 0.88rem; color: #4a5568;">${{l.top3.join(" • ") || "Sin datos"}}</td>
+                    <td style="font-size: 0.88rem; color: #4a5568;">${{escapeHtml(l.top3.join(" • ") || "Sin datos")}}</td>
                 </tr>
             `).join("");
         }}
@@ -1288,8 +1298,8 @@ def generar_html_web_interactiva(db_name: str = "elo_club.db", ruta_destino: str
                     return `
                         <tr>
                             <td style="text-align: center; color: var(--text-muted);">${{t.num}}</td>
-                            <td style="white-space: nowrap; font-size: 0.85rem;">${{t.fecha}}</td>
-                            <td><strong>${{t.torneo}}</strong></td>
+                            <td style="white-space: nowrap; font-size: 0.85rem;">${{escapeHtml(t.fecha)}}</td>
+                            <td><strong>${{escapeHtml(t.torneo)}}</strong></td>
                             <td style="text-align: center;">${{t.elo_inicial}}</td>
                             <td style="text-align: center;">${{t.rivales_medio}}</td>
                             <td style="text-align: center; font-weight: 600;">${{t.puntos}} / ${{t.partidas}}</td>
@@ -1402,7 +1412,7 @@ def generar_html_web_interactiva(db_name: str = "elo_club.db", ruta_destino: str
 
             tooltip.style.left = `${{x}}px`;
             tooltip.style.top = `${{y}}px`;
-            tooltip.innerHTML = `<strong>${{elo}} pts</strong><br><span style="color:#d4af37">${{torneo}}</span><br><small style="color:#a0aec0">${{fecha}}</small>`;
+            tooltip.innerHTML = `<strong>${{elo}} pts</strong><br><span style="color:#d4af37">${{escapeHtml(torneo)}}</span><br><small style="color:#a0aec0">${{escapeHtml(fecha)}}</small>`;
             tooltip.style.display = "block";
         }}
 
